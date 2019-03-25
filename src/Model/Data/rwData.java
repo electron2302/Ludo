@@ -1,46 +1,44 @@
 package Model.Data;
 
-public interface rwData {
+public interface rwData extends roData {
 	
-	// generell stuff
+	// general stuff
 	
 	static rwData getInstanceOfRWData() {
 		return SingeltonData.getInstanceOfSingletonData();
 	}
 	
 	void setBoardLength(int length); // save in singleton
-	int getBoardLength();
+	//int getBoardLength();
 	
-	void setPlayerTurn(int PlayerID);// save in singleton
-	int getPalyerTurnID();
+	void setPlayerTurn(int player);// save in singleton
+	//int getPalyerTurnID();
 	
 	/**
 	 * how many individual tockens each player gets
 	 * @param count amount of tokens per player
 	 */
 	void setTockenCoutPP(int count);//creates all Tockens and saves in LIST
-	int getTockenCountPP();//list.length
+	// int getTockenCountPP();//list.length
 	
-	//token stuff
+	// token stuff
 	
-	int getPositionOfTocken(int tokenID);
+	// int getPositionOfTocken(int tokenID);
 	void setPositionOfTocken(int tokenID, int position);
 	
-	int getTockenIdAtPosition(int position);// search thru LSIST and check every entitits position
-	
-	
+	// int getTockenIdAtPosition(int position);// search thru LSIST and check every entitits position
 	
 	//Player stuff
 	
 	void setPlayerHasWon(int PlayerID);// sets to true since initialized with false
-	boolean hasPlayerWon(int PlayerID);
+	// boolean hasPlayerWon(int PlayerID);
 	
 	/**
 	 * 
 	 * @param type (1-> Human, 2-> AI, 3-> network)
 	 */
 	void addPlayer(int type); // to a Player LIST of paler Objects
-	int getPlayerType(int PlayerID);
-	int getPlayerCount();
+	// int getPlayerType(int PlayerID);
+	// int getPlayerCount();
 
 }

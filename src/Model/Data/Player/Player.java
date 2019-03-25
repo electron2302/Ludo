@@ -15,4 +15,6 @@ public interface Player {
 	static Player make(int playerID, int playerType) {
 		return new PlayerDelgate(playerID, playerType) {};
 	}
+
+	
 }

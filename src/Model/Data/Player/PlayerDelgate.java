@@ -2,8 +2,8 @@ package Model.Data.Player;
 
 public abstract class PlayerDelgate implements Player {
 	
-	private int playerID;
-	private int playerType;
+	private final int playerID;
+	private final int playerType;
 	private boolean won = false;
 	
 	PlayerDelgate(int playerID, int playerType) {
@@ -20,7 +20,6 @@ public abstract class PlayerDelgate implements Player {
 	public int getPlayerType() {
 		return playerType;
 	}
-	
 	
 	@Override
 	public boolean hasPlayerWon() {

@@ -7,6 +7,8 @@ public class SingeltonData implements rwData {
 	private final static SingeltonData singeltonData = new SingeltonData();
 	
 	private final ArrayList<Player> players = new ArrayList<>();
+
+	private int playerTurn = -1;
 	
 	private SingeltonData() {
 	}
@@ -62,8 +64,21 @@ public class SingeltonData implements rwData {
 		return getPlayers().size();
 	}
 	
+	@Override
+	public int getPlayerType(int PlayerID) {
+		return getPlayers().get(PlayerID).getPlayerType();
+	}
 	
+	@Override
+	public void setPlayerTurn(int player) {
+		playerTurn = player;
+		
+	}
 	
+	@Override
+	public int getPlayerTurnID() {
+		return playerTurn;
+	}
 	
 
 	@Override
@@ -74,18 +89,6 @@ public class SingeltonData implements rwData {
 
 	@Override
 	public int getBoardLength() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void setPlayerTurn(int PlayerID) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public int getPalyerTurnID() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
@@ -120,10 +123,6 @@ public class SingeltonData implements rwData {
 		return 0;
 	}
 
-	@Override
-	public int getPlayerType(int PlayerID) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+	
 	
 }
