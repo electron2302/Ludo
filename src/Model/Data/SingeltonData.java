@@ -3,6 +3,13 @@ import java.util.ArrayList;
 
 import Model.Data.Player.Player;
 
+/**
+ * A SingltonData:
+ *
+ * @author Andreas Hager, andreashager19@gmail.com
+ * @author Simon Arndt, technikon23@gmail.com
+ * @version Initial version
+ */
 public class SingeltonData implements rwData {
 	private final static SingeltonData singeltonData = new SingeltonData();
 	

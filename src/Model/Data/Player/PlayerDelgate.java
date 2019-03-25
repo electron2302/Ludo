@@ -1,7 +1,13 @@
 package Model.Data.Player;
-
-public abstract class PlayerDelgate implements Player {
-	
+/**
+ * A Player Delegate
+ * which represents the data memory for 
+ * an Player of this Ludo game.
+ *
+ * @author Andreas Hager, andreashager19@gmail.com
+ * @version Initial version
+ */
+abstract class PlayerDelgate implements Player {
 	private final int playerID;
 	private final int playerType;
 	private boolean won = false;

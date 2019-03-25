@@ -1,5 +1,13 @@
 package Model.Data;
 
+
+/**
+ * A roData Interface:
+ *
+ * @author Andreas Hager, andreashager19@gmail.com
+ * @author Simon Arndt, technikon23@gmail.com
+ * @version Initial version
+ */
 public interface roData {
 	
 	static roData getInstanceOfROData() {
