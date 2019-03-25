@@ -4,6 +4,10 @@ public interface rwData {
 	
 	// generell stuff
 	
+	static rwData getInstanceOfRWData() {
+		return SingeltonData.getInstanceOfSingletonData();
+	}
+	
 	void setBoardLength(int length); // save in singleton
 	int getBoardLength();
 	
