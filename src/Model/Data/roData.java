@@ -22,7 +22,7 @@ public interface roData {
 	
 	int getPositionOfTocken(int tokenID);
 	
-	int getTockenIdAtPosition(int position);// search thru LSIST and check every entitits position
+	//int getTockenIdAtPosition(int position);// search thru LSIST and check every entitits position /////////// we came to the conclusion that this belongs to logic
 	
 	boolean hasPlayerWon(int PlayerID);
 	

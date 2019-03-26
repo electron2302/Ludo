@@ -32,8 +32,7 @@ public interface rwData extends roData {
 	
 	// int getPositionOfTocken(int tokenID);
 	void setPositionOfTocken(int tokenID, int position);
-	
-	// int getTockenIdAtPosition(int position);// search thru LSIST and check every entitits position
+	void addTocken(int tokenID);
 	
 	//Player stuff
 	

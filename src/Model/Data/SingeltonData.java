@@ -2,6 +2,10 @@ package Model.Data;
 import java.util.ArrayList;
 
 import Model.Data.Player.Player;
+import Model.Data.Tocken.Tocken;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A SingltonData:
@@ -12,10 +16,16 @@ import Model.Data.Player.Player;
  */
 public class SingeltonData implements rwData {
 	private final static SingeltonData singeltonData = new SingeltonData();
-	
+
 	private final ArrayList<Player> players = new ArrayList<>();
 
+	private final Map<String,Tocken> tokens = new HashMap<>();
+
 	private int playerTurn = -1;
+
+	private int boardLength = -1;
+
+	private int tockenCoutPP = -1;
 	
 	private SingeltonData() {
 	}
@@ -90,46 +100,36 @@ public class SingeltonData implements rwData {
 
 	@Override
 	public void setBoardLength(int length) {
-		// TODO Auto-generated method stub
-		
+		boardLength = length;
 	}
 
 	@Override
 	public int getBoardLength() {
-		// TODO Auto-generated method stub
-		return 0;
+		return boardLength;
 	}
 
 	@Override
 	public void setTockenCoutPP(int count) {
-		// TODO Auto-generated method stub
-		
+		tockenCoutPP = count;
 	}
 
 	@Override
 	public int getTockenCountPP() {
-		// TODO Auto-generated method stub
-		return 0;
+		return tockenCoutPP;
+	}
+
+	@Override
+	public void addTocken(int tokenID){
+		tokens.put(Integer.toString(tokenID),Tocken.make());
 	}
 
 	@Override
 	public int getPositionOfTocken(int tokenID) {
-		// TODO Auto-generated method stub
-		return 0;
+		return tokens.get(Integer.toString(tokenID)).getPosition();
 	}
 
 	@Override
 	public void setPositionOfTocken(int tokenID, int position) {
-		// TODO Auto-generated method stub
-		
+		tokens.get(Integer.toString(tokenID)).setPosition(position);
 	}
-
-	@Override
-	public int getTockenIdAtPosition(int position) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	
-	
 }
