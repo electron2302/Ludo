@@ -1,4 +1,4 @@
-package Model.Data.Tocken;
+package Model.Data.tocken;
 
 abstract public class TockenDelegate implements Tocken{
 

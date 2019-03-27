@@ -1,5 +1,5 @@
-package Model.Data.Player;
-import Model.Data.Player.PlayerDelgate;
+package Model.Data.player;
+import Model.Data.player.PlayerDelgate;
 
 /**
  * A Player Inteface

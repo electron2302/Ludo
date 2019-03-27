@@ -2,16 +2,16 @@ package Model.Data;
 
 
 /**
- * A roData Interface:
+ * A ROData Interface:
  *
  * @author Andreas Hager, andreashager19@gmail.com
  * @author Simon Arndt, technikon23@gmail.com
  * @version Initial version
  */
-public interface roData {
+public interface ROData {
 	
-	static roData getInstanceOfROData() {
-		return rwData.getInstanceOfRWData();
+	static ROData getInstanceOfROData() {
+		return RWData.getInstanceOfRWData();
 	}
 	
 	int getPlayerTurnID(); 

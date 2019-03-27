@@ -1,4 +1,4 @@
-package Model.Data.Tocken;
+package Model.Data.tocken;
 
 public interface Tocken {
 

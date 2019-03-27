@@ -1,11 +1,11 @@
 package Model.Data;
 import java.util.ArrayList;
 
-import Model.Data.Player.Player;
-import Model.Data.Tocken.Tocken;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import Model.Data.player.Player;
+import Model.Data.tocken.Tocken;
 
 /**
  * A SingltonData:
@@ -14,7 +14,7 @@ import java.util.Map;
  * @author Simon Arndt, technikon23@gmail.com
  * @version Initial version
  */
-public class SingeltonData implements rwData {
+public class SingeltonData implements RWData {
 	private final static SingeltonData singeltonData = new SingeltonData();
 
 	private final ArrayList<Player> players = new ArrayList<>();
@@ -51,8 +51,10 @@ public class SingeltonData implements rwData {
 	 * The size starts with zero! 
 	 * @param type it is given by the Controller(1-> Human, 2-> AI, 3-> network)
 	 */
-	public void addPlayer(int type) {
-		getPlayers().add(Player.make(getPlayers().size(), type)); 
+	public int addPlayer(int type) {
+		final int newID = getPlayers().size();
+		getPlayers().add(Player.make(newID, type));
+		return newID;
 	}
 	
 	/**

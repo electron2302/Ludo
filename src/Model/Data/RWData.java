@@ -1,17 +1,17 @@
 package Model.Data;
 
 /**
- * A rwData Interface:
+ * A RWData Interface:
  *
  * @author Andreas Hager, andreashager19@gmail.com
  * @author Simon Arndt, technikon23@gmail.com
  * @version Initial version
  */
-public interface rwData extends roData {
+public interface RWData extends ROData {
 	
 	// general stuff
 	
-	static rwData getInstanceOfRWData() {
+	static RWData getInstanceOfRWData() {
 		return SingeltonData.getInstanceOfSingletonData();
 	}
 	
@@ -42,8 +42,9 @@ public interface rwData extends roData {
 	/**
 	 * 
 	 * @param type (1-> Human, 2-> AI, 3-> network)
+	 * @return ID of new Player
 	 */
-	void addPlayer(int type); // to a Player LIST of paler Objects
+	int addPlayer(int type); // to a Player LIST of paler Objects
 	// int getPlayerType(int PlayerID);
 	// int getPlayerCount();
 

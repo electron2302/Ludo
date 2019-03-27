@@ -1,15 +1,16 @@
 package Model.Data;
 
 public class TestMain {
-	public static void main(String... ars) {
+	public static void main(String... args) {
 		
-		roData test = roData.getInstanceOfROData();
+		ROData test = ROData.getInstanceOfROData();
 		System.out.println(test.getPlayerTurnID() + ", expected = -1 " );
 		System.out.println(test.getPlayerCount() + ", expected = 0 ");
 		
 		
-		rwData test2 = rwData.getInstanceOfRWData();
+		((RWData) test).addPlayer(1); // ist das ein Problem?!?
 		
+		RWData test2 = RWData.getInstanceOfRWData();
 		System.out.println(test2.getPlayerCount() + ", expected = 0 ");
 		test2.addPlayer(1);
 		test2.addPlayer(3);
