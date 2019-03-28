@@ -1,5 +1,5 @@
 package Model.Data.player;
-import Model.Data.player.PlayerDelgate;
+import Model.Data.player.PlayerDelegate;
 
 /**
  * A Player Inteface
@@ -18,7 +18,7 @@ public interface Player {
 	int getPlayerID();
 	
 	static Player make(int playerID, int playerType) {
-		return new PlayerDelgate(playerID, playerType) {};
+		return new PlayerDelegate(playerID, playerType) {};
 	}
 
 	

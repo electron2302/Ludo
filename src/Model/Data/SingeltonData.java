@@ -34,7 +34,6 @@ public class SingeltonData implements RWData {
 		return singeltonData;
 	}
 	
-	
 	//player Stuff
 	
 	

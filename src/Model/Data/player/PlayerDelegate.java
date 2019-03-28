@@ -7,12 +7,12 @@ package Model.Data.player;
  * @author Andreas Hager, andreashager19@gmail.com
  * @version Initial version
  */
-abstract class PlayerDelgate implements Player {
+abstract class PlayerDelegate implements Player {
 	private final int playerID;
 	private final int playerType;
 	private boolean won = false;
 	
-	PlayerDelgate(int playerID, int playerType) {
+	PlayerDelegate(int playerID, int playerType) {
 		this.playerID = playerID;
 		this.playerType = playerType;
 	}
