@@ -1,5 +1,5 @@
-package Model.Data.player;
-import Model.Data.player.PlayerDelegate;
+package model.data.player;
+import model.data.player.PlayerDelegate;
 
 /**
  * A Player Inteface

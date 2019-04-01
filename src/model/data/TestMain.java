@@ -1,9 +1,11 @@
-package Model.Data;
+package model.data;
 
 public class TestMain {
 	public static void main(String... args) {
 		
 		ROData test = ROData.getInstanceOfROData();
+		
+		
 		System.out.println(test.getPlayerTurnID() + ", expected = -1 " );
 		System.out.println(test.getPlayerCount() + ", expected = 0 ");
 		

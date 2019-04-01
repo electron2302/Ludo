@@ -1,11 +1,11 @@
-package Model.Data;
+package model.data;
 import java.util.ArrayList;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import Model.Data.player.Player;
-import Model.Data.tocken.Tocken;
+import model.data.player.Player;
+import model.data.tocken.Tocken;
 
 /**
  * A SingltonData:

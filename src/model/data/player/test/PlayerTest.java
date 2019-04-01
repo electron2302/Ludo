@@ -1,10 +1,10 @@
-package Model.Data.player.test;
+package model.data.player.test;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import Model.Data.player.Player;
+import model.data.player.Player;
 
 public class PlayerTest {
 

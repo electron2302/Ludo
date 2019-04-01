@@ -1,10 +1,10 @@
-package Model.Data.test;
+package model.data.test;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import Model.Data.SingeltonData;
+import model.data.SingeltonData;
 
 /**
  * 

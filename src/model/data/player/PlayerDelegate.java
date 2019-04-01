@@ -1,4 +1,4 @@
-package Model.Data.player;
+package model.data.player;
 /**
  * A Player Delegate
  * which represents the data memory for 
