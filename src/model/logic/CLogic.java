@@ -81,13 +81,23 @@ public class CLogic implements Logic {
 		final int playerTurn = rwData.getPlayerTurnID();
 		boolean moved = true;
 		try {
-			checks(tokenID, diceValue, playerTurn);
-			final int relativeTargetPosition = rwData.getPositionOfTocken(playerTurn, tokenID) + diceValue;
-			throwTocken(relativeTargetPosition + rwData.getSpacesBetweenPlayerBases()*playerTurn);
-			rwData.setPositionOfTocken(playerTurn, tokenID, relativeTargetPosition);
-			if(updataPlayerHasWonStatus(playerTurn))
-				rwData.setPlayerHasWon(playerTurn);
-			
+			if(checks(tokenID, diceValue, playerTurn)) {
+				if(rwData.getPositionOfTocken(playerTurn, tokenID) == -1) {
+					throwTocken(0 + rwData.getSpacesBetweenPlayerBases()*playerTurn);
+					rwData.setPositionOfTocken(playerTurn, tokenID, 0);
+				}else {
+					final int relativeTargetPosition = rwData.getPositionOfTocken(playerTurn, tokenID) + diceValue;
+					throwTocken(relativeTargetPosition + rwData.getSpacesBetweenPlayerBases()*playerTurn);
+					rwData.setPositionOfTocken(playerTurn, tokenID, relativeTargetPosition);
+				}
+				if(diceValue != 6)
+					rwData.setPlayerTurn(playerTurn + 1);
+				if(updataPlayerHasWonStatus(playerTurn))
+					rwData.setPlayerHasWon(playerTurn);
+			}else {
+				rwData.setPlayerTurn(playerTurn + 1);
+				moved = false;
+			}
 		}catch( FalseIDException | 
 				FalsePositionException | 
 				FalseTockenIDException |
@@ -111,8 +121,9 @@ public class CLogic implements Logic {
 	 * @throws PlayerAlereadyWonException
 	 * @throws IllegalMoveException
 	 */
-	private void checks(int tokenID, int diceValue, final int playerTurn) throws FalseIDException,
+	private boolean checks(int tokenID, int diceValue, int playerTurn) throws FalseIDException,
 			FalseTockenIDException, TriedToMooveToFarException, PlayerAlereadyWonException, IllegalMoveException {
+		boolean isAlowed = true;
 		//check move distance
 		if(rwData.getPositionOfTocken(playerTurn, tokenID) + diceValue >= rwData.getBoardLength() + rwData.getTockenCountPP())
 			throw new TriedToMooveToFarException();
@@ -120,9 +131,17 @@ public class CLogic implements Logic {
 		if(rwData.hasPlayerWon(playerTurn))
 			throw new PlayerAlereadyWonException();
 		//check if you try to hit your own token.
-		for(int tokenIDPfPlayer = 0; tokenIDPfPlayer < rwData.getTockenCountPP(); tokenIDPfPlayer++) 
-			if(rwData.getPositionOfTocken(playerTurn, tokenIDPfPlayer) == rwData.getPositionOfTocken(playerTurn, tokenID) && tokenIDPfPlayer != tokenID)
+		for(int tokenIDOfPlayer = 0; tokenIDOfPlayer < rwData.getTockenCountPP(); tokenIDOfPlayer++) {
+			final int positionOfNotMovedToken = rwData.getPositionOfTocken(playerTurn, tokenIDOfPlayer);
+			final int positionOfToken = rwData.getPositionOfTocken(playerTurn, tokenID);
+			if(positionOfNotMovedToken == positionOfToken && tokenIDOfPlayer != tokenID && positionOfToken != -1)
 				throw new IllegalMoveException();
+			if(positionOfNotMovedToken == 0 && positionOfToken != 0)
+				throw new IllegalMoveException();
+		}
+		if(rwData.getPositionOfTocken(playerTurn, tokenID) == -1 && diceValue != 6)
+			isAlowed = false;
+		return isAlowed;
 	}
 
 	/**
