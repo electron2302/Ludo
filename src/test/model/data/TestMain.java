@@ -1,7 +1,14 @@
-package model.data;
+package test.model.data;
+
+import model.data.ROData;
+import model.data.RWData;
+import model.data.exceptions.FalseIDException;
+import model.data.exceptions.FalsePlayerTypeException;
+import model.data.exceptions.FalsePositionException;
+import model.data.exceptions.FalseTockenIDException;
 
 public class TestMain {
-	public static void main(String... args) {
+	public static void main(String... args) throws FalseIDException, FalsePlayerTypeException, FalsePositionException, FalseTockenIDException {
 		
 		ROData test = ROData.getInstanceOfROData();
 		
@@ -10,7 +17,7 @@ public class TestMain {
 		System.out.println(test.getPlayerCount() + ", expected = 0 ");
 		
 		
-		((RWData) test).addPlayer(1); // ist das ein Problem?!?
+		//((RWData) test).addPlayer(1); // ist das ein Problem?!?
 		
 		RWData test2 = RWData.getInstanceOfRWData();
 		System.out.println(test2.getPlayerCount() + ", expected = 0 ");
@@ -34,25 +41,25 @@ public class TestMain {
 		System.out.println(test.hasPlayerWon(0) + ", expected = false ");
 		System.out.println(test.hasPlayerWon(1) + ", expected = true ");
 
-		test2.addTocken(23);
-		test2.addTocken(4);
-		test2.addTocken(5);
-		test2.addTocken(9);
+		test2.addTocken(1, 23);
+		test2.addTocken(1, 4);
+		test2.addTocken(2, 5);
+		test2.addTocken(2, 9);
 
-		System.out.println(test.getPositionOfTocken(23) + ", expected = -1 ");
-		System.out.println(test.getPositionOfTocken(4) + ", expected = -1 ");
-		System.out.println(test.getPositionOfTocken(5) + ", expected = -1 ");
-		System.out.println(test.getPositionOfTocken(9) + ", expected = -1 ");
+		System.out.println(test.getPositionOfTocken(1, 23) + ", expected = -1 ");
+		System.out.println(test.getPositionOfTocken(1, 4) + ", expected = -1 ");
+		System.out.println(test.getPositionOfTocken(2, 5) + ", expected = -1 ");
+		System.out.println(test.getPositionOfTocken(2, 9) + ", expected = -1 ");
 
-		test2.setPositionOfTocken(23,1);
-		test2.setPositionOfTocken(4,7869);
-		test2.setPositionOfTocken(5,3);
-		test2.setPositionOfTocken(9,5);
+		test2.setPositionOfTocken(1, 23,1);
+		test2.setPositionOfTocken(1, 4,7869);
+		test2.setPositionOfTocken(2, 5,3);
+		test2.setPositionOfTocken(2, 9,5);
 
-		System.out.println(test.getPositionOfTocken(23) + ", expected = 1 ");
-		System.out.println(test.getPositionOfTocken(4) + ", expected = 7869 ");
-		System.out.println(test.getPositionOfTocken(5) + ", expected = 3 ");
-		System.out.println(test.getPositionOfTocken(9) + ", expected = 5 ");
+		System.out.println(test.getPositionOfTocken(1, 23) + ", expected = 1 ");
+		System.out.println(test.getPositionOfTocken(1, 4) + ", expected = 7869 ");
+		System.out.println(test.getPositionOfTocken(2, 5) + ", expected = 3 ");
+		System.out.println(test.getPositionOfTocken(2, 9) + ", expected = 5 ");
 
 	}
 }

@@ -2,10 +2,17 @@ package model.data;
 import java.util.ArrayList;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import model.data.exceptions.FalseIDException;
+import model.data.exceptions.FalsePlayerTypeException;
+import model.data.exceptions.FalsePositionException;
+import model.data.exceptions.FalseTockenIDException;
+import model.data.exceptions.NegativeBoardLengthException;
 import model.data.player.Player;
 import model.data.tocken.Tocken;
+import model.data.tocken.TockenID;
 
 /**
  * A SingltonData:
@@ -15,122 +22,200 @@ import model.data.tocken.Tocken;
  * @version Initial version
  */
 public class SingeltonData implements RWData {
+	
+	/**
+	 * For the singleton Pattern.
+	 */
 	private final static SingeltonData singeltonData = new SingeltonData();
 
-	private final ArrayList<Player> players = new ArrayList<>();
-
-	private final Map<String,Tocken> tokens = new HashMap<>();
+	private final List<Player> players = new ArrayList<>();
+	private final Map<TockenID, Tocken> tockens = new HashMap<>();
 
 	private int playerTurn = -1;
 
 	private int boardLength = -1;
-
-	private int tockenCoutPP = -1;
+	private int spacesBetweenPlayerBases = -1;
 	
-	private SingeltonData() {
-	}
+	/**
+	 * For the singleton Pattern.
+	 */
+	private SingeltonData() {}
 	
+	/**
+	 * For the singleton Pattern.
+	 * @return the Instance of an singleton.
+	 */
 	public static SingeltonData getInstanceOfSingletonData() {
 		return singeltonData;
 	}
 	
-	//player Stuff
-	
-	
 	/**
-	 * Standard getter
-	 * @return
+	 * Standard getter.
+	 * @return  List of players.
 	 */
-	private ArrayList<Player> getPlayers(){
+	private List<Player> getPlayers(){
 		return players;
 	}
 	
 	/**
-	 * adds a new Player to the list with the current size as an ID. 
-	 * The size starts with zero! 
-	 * @param type it is given by the Controller(1-> Human, 2-> AI, 3-> network)
+	 * Adds an new player to the game.
+	 * @param type (1-> Human, 2-> AI, 3-> network)
+	 * @return ID of new Player
+	 * @throws FalsePlayerTypeException it the type is < 1.
 	 */
-	public int addPlayer(int type) {
-		final int newID = getPlayers().size();
-		getPlayers().add(Player.make(newID, type));
+	public int addPlayer(int type) throws FalsePlayerTypeException {
+		final int newID = getPlayers().size();	// the ID starts with 0.
+		try {
+			getPlayers().add(Player.make(newID, type));
+		} catch (FalseIDException e) {
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
 		return newID;
 	}
 	
 	/**
-	 * 
-	 * @param PlayerID it equals to the position in the ArrayList(Player)
+	 * Setter.
+	 * @param PlayerID the player wich has won.
+	 * @throws FalseIDException it the playerID is < 0;
 	 */
-	public void setPlayerHasWon(int PlayerID) {
+	public void setPlayerHasWon(int PlayerID) throws FalseIDException {
+		if(PlayerID < 0) throw new FalseIDException();
 		getPlayers().get(PlayerID).setPlayerHasWon();
 	}
 	
 	/**
-	 * 
-	 * @param PlayerID it equals to the position in the ArrayList(Player)
-	 * @return true if the player has won
+	 * Has the player with the ID playerID won.
+	 * @param playerID the ID of the player.
+	 * @return true if the player has won.
+	 * @throws FalseIDException
 	 */
-	public boolean hasPlayerWon(int PlayerID) {
+	public boolean hasPlayerWon(int PlayerID) throws FalseIDException {
+		if(PlayerID < 0) throw new FalseIDException();
 		return getPlayers().get(PlayerID).hasPlayerWon();
 	}
 	
-	
 	/**
-	 * 
-	 * @return the total count of Players
+	 * Getter.
+	 * @return total count of players.
 	 */
+	@Override
 	public int getPlayerCount() {
 		return getPlayers().size();
 	}
 	
+	/**
+	 * Getter for the type fo the player.
+	 * @param PlayerID
+	 * @return 1 for human, 2 for AI, 3 for Network.  
+	 * @throws FalseIDException if the ID is < 0.
+	 */
 	@Override
-	public int getPlayerType(int PlayerID) {
+	public int getPlayerType(int PlayerID) throws FalseIDException {
+		if(PlayerID < 0) throw new FalseIDException(); 
 		return getPlayers().get(PlayerID).getPlayerType();
 	}
 	
+	/**
+	 * Setter for the player turn.
+	 * @param playerID player who is about to play.
+	 */
 	@Override
-	public void setPlayerTurn(int player) {
-		playerTurn = player;
-		
+	public void setPlayerTurn(int playerID) {
+		playerTurn = playerID;
 	}
 	
+	/**
+	 * Getter for the ID of the player who is about to play.
+	 * @return the ID of the player.
+	 */
 	@Override
 	public int getPlayerTurnID() {
 		return playerTurn;
 	}
 	
-
+	/**
+	 * Setter for the board length.
+	 * @param length sould be whole multiply of the playerCount.
+	 * @throws NegativeBoardLengthException if the length is < 0
+	 */
 	@Override
-	public void setBoardLength(int length) {
+	public void setBoardLength(int length) throws NegativeBoardLengthException {
+		if(length < 0)
+			throw new NegativeBoardLengthException();
+		setSpacesBetweenPlayerBases(length / getPlayerCount());
 		boardLength = length;
 	}
 
+	
+	/**
+	 * Getter for the space betwen two bases.
+	 * @return the space betwen two bases.
+	 */
+	@Override
+	public int getSpacesBetweenPlayerBases() {
+		return spacesBetweenPlayerBases;
+	}
+	
+	/**
+	 * Getter for the board length.
+	 * @return the BoardLength.
+	 */
 	@Override
 	public int getBoardLength() {
 		return boardLength;
 	}
 
-	@Override
-	public void setTockenCoutPP(int count) {
-		tockenCoutPP = count;
-	}
-
+	/**
+	 * Getter for the count of tokens, of each player.
+	 * Every player has the same count of tokens.
+	 * @return the count of tokens of each player.
+	 */
 	@Override
 	public int getTockenCountPP() {
-		return tockenCoutPP;
+		return tockens.size()/getPlayerCount();
 	}
 
+	/**
+	 * Adds an new token to an Player.
+	 * @param playerID .
+	 * @param tokenID .
+	 * @throws FalseIDException if the playerID is < 0.
+	 * @throws FalseTockenIDException if the tokenID is < 0.
+	 */
 	@Override
-	public void addTocken(int tokenID){
-		tokens.put(Integer.toString(tokenID),Tocken.make());
+	public void addTocken(int playerID, int tockenID) throws FalseIDException, FalseTockenIDException{
+		tockens.put(new TockenID(playerID, tockenID), Tocken.make());
 	}
 
+	/**
+	 * Getter for the absolute position of the token from the player.
+	 * @param playerID .
+	 * @param tokenID .
+	 * @return the absolute position of the tocken on the board.
+	 * @throws FalseIDException if the ID is < 0.
+	 * @throws FalseTockenIDException if the ID is < 0.
+	 */
 	@Override
-	public int getPositionOfTocken(int tokenID) {
-		return tokens.get(Integer.toString(tokenID)).getPosition();
+	public int getPositionOfTocken(int playerID, int tockenID) throws FalseIDException, FalseTockenIDException {
+		return tockens.get(new TockenID(playerID, tockenID)).getPosition();
 	}
 
+	/**
+	 * Setter for the position of the specified token.
+	 * @param playerID .
+	 * @param tokenID .
+	 * @param position new position.
+	 * @throws FalseIDException if the playerID is < 0.
+	 * @throws FalseTockenIDException if the TokenID is < 0.
+	 * @throws FalsePositionException if the position is < 0.
+	 */
 	@Override
-	public void setPositionOfTocken(int tokenID, int position) {
-		tokens.get(Integer.toString(tokenID)).setPosition(position);
+	public void setPositionOfTocken(int playerID, int tockenID, int position) throws FalsePositionException, FalseIDException, FalseTockenIDException {
+		tockens.get(new TockenID(playerID, tockenID)).setPosition(position);
+	}
+
+	private void setSpacesBetweenPlayerBases(int spacesBetweenPlayerBases) {
+		this.spacesBetweenPlayerBases = spacesBetweenPlayerBases;
 	}
 }

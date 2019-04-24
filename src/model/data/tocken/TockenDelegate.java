@@ -1,5 +1,7 @@
 package model.data.tocken;
 
+import model.data.exceptions.FalsePositionException;
+
 abstract public class TockenDelegate implements Tocken{
 
     private int position;
@@ -12,7 +14,9 @@ abstract public class TockenDelegate implements Tocken{
         return position;
     }
 
-    public void setPosition(int position) {
+    public void setPosition(int position) throws FalsePositionException {
+    	if(position < 0)
+    		throw new FalsePositionException();
         this.position = position;
     }
 

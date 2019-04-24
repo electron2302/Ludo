@@ -1,4 +1,6 @@
 package model.data.player;
+import model.data.exceptions.FalseIDException;
+import model.data.exceptions.FalsePlayerTypeException;
 import model.data.player.PlayerDelegate;
 
 /**
@@ -17,7 +19,7 @@ public interface Player {
 	
 	int getPlayerID();
 	
-	static Player make(int playerID, int playerType) {
+	static Player make(int playerID, int playerType) throws FalseIDException, FalsePlayerTypeException {
 		return new PlayerDelegate(playerID, playerType) {};
 	}
 

@@ -1,8 +1,10 @@
-package model.data.test;
+package test.model.data.singleton;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
 import model.data.SingeltonData;
+import model.data.exceptions.FalseIDException;
+import model.data.exceptions.FalsePlayerTypeException;
 
 /**
  * 
@@ -13,7 +15,7 @@ public class SingeltonDataGetAndSetPlayerTurnIDTest {
 	final SingeltonData sut = SingeltonData.getInstanceOfSingletonData();
 	
 	@Test(timeout = 1_000)
-	public void test() {
+	public void test() throws FalseIDException, FalsePlayerTypeException {
 		//arrange
 		sut.addPlayer(2);
 		sut.addPlayer(1);

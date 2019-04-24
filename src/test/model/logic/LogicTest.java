@@ -1,4 +1,4 @@
-package model.logic.test;
+package test.model.logic;
 
 import static org.junit.Assert.assertEquals;
 
@@ -7,24 +7,30 @@ import java.util.List;
 
 import org.junit.Test;
 
-import jdk.jfr.Unsigned;
+import model.logic.CLogic;
 import model.logic.Logic;
 
 public class LogicTest {
 	
+	private Logic getSut() {
+		return new CLogic();
+	}
+	
+	
 	@Test(timeout = 1_000)
 	public void throwDiceBetweenOneAndSixTest() {
 		//arrange
+		final Logic sut = getSut();
 		final int upperBound = 6;
 		final int lowerBound = 1;
 		final boolean want = true;
-		final List<Integer> sut = new ArrayList<>();
+		final List<Integer> list = new ArrayList<>();
 		boolean have = true;
 		//act
 		for(int counter = 0; counter < 1_000_000; counter++)
-			sut.add(Logic.throwDice());
-		for(int index = 0; index < sut.size(); index++)
-			if(sut.get(index)< lowerBound || sut.get(index)> upperBound)
+			list.add(sut.throwDice());
+		for(int index = 0; index < list.size(); index++)
+			if(list.get(index)< lowerBound || list.get(index)> upperBound)
 				have = false;
 		//assert
 		assertEquals(want, have);
@@ -34,6 +40,7 @@ public class LogicTest {
 	public void throwDiceStatisticTest() {
 		for(int i = 0; i < 50; i++ ) {
 			//arrange
+			final Logic sut = getSut();
 			final double expected = 1./6;
 			final double error = 0.002;
 			final double upperBound = expected + error;
@@ -44,27 +51,27 @@ public class LogicTest {
 			int countFour = 0;
 			int countFive = 0;
 			int countSix = 0;
-			final List<Integer> sut = new ArrayList<>();
+			final List<Integer> list = new ArrayList<>();
 			final boolean want = true;
 			//act
 			for(int counter = 0; counter < 1_000_000; counter++)
-				sut.add(Logic.throwDice());
+				list.add(sut.throwDice());
 			
-			for(int index = 0; index < sut.size(); index++) {
-				if(sut.get(index) == 1)
+			for(int index = 0; index < list.size(); index++) {
+				if(list.get(index) == 1)
 					countOne++;
-				else if(sut.get(index) == 2)
+				else if(list.get(index) == 2)
 					countTwo++;
-				else if(sut.get(index) == 3)
+				else if(list.get(index) == 3)
 					countThree++;
-				else if(sut.get(index) == 4)
+				else if(list.get(index) == 4)
 					countFour++;
-				else if(sut.get(index) == 5)
+				else if(list.get(index) == 5)
 					countFive++;
-				else if(sut.get(index) == 6)
+				else if(list.get(index) == 6)
 					countSix++;
 			}
-			final int size = sut.size();
+			final int size = list.size();
 			final double valueOne = ((double)countOne)/size;
 			final double valueTwo = ((double)countTwo)/size;
 			final double valueThree = ((double)countThree)/size;

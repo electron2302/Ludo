@@ -1,15 +1,17 @@
-package model.data.player.test;
+package test.model.data.player;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import model.data.exceptions.FalseIDException;
+import model.data.exceptions.FalsePlayerTypeException;
 import model.data.player.Player;
 
 public class PlayerTest {
 
 	@Test(timeout = 1_000)
-	public void getPlayerIDTest() {
+	public void getPlayerIDTest() throws FalseIDException, FalsePlayerTypeException {
 		//arrange
 		final Player sut = Player.make(1, 0);
 		final int want = 1;
@@ -20,7 +22,7 @@ public class PlayerTest {
 	}
 
 	@Test(timeout = 1_000)
-	public void getPlayerTypeTest() {
+	public void getPlayerTypeTest() throws FalseIDException, FalsePlayerTypeException {
 		//arrange
 		final Player sut = Player.make(0, 1);
 		final int want = 1;
@@ -32,7 +34,7 @@ public class PlayerTest {
 	
 	
 	@Test(timeout = 1_000)
-	public void hasPlayerWonDefault() {
+	public void hasPlayerWonDefault() throws FalseIDException, FalsePlayerTypeException {
 		//arrange
 		final Player sut = Player.make(1, 0);
 		final boolean want = false;
@@ -43,7 +45,7 @@ public class PlayerTest {
 	}
 	
 	@Test(timeout = 1_000)
-	public void hasPlayerWon() {
+	public void hasPlayerWon() throws FalseIDException, FalsePlayerTypeException {
 		//arrange
 		final Player sut = Player.make(1, 0);
 		sut.setPlayerHasWon();
@@ -55,7 +57,7 @@ public class PlayerTest {
 	}
 	
 	@Test(timeout = 1_000)
-	public void hasPlayerWon2() {
+	public void hasPlayerWon2() throws FalseIDException, FalsePlayerTypeException {
 		//arrange
 		final Player sut = Player.make(1, 0);
 		sut.setPlayerHasWon();

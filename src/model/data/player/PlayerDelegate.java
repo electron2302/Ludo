@@ -1,4 +1,8 @@
 package model.data.player;
+
+import model.data.exceptions.FalseIDException;
+import model.data.exceptions.FalsePlayerTypeException;
+
 /**
  * A Player Delegate
  * which represents the data memory for 
@@ -12,7 +16,11 @@ abstract class PlayerDelegate implements Player {
 	private final int playerType;
 	private boolean won = false;
 	
-	PlayerDelegate(int playerID, int playerType) {
+	PlayerDelegate(int playerID, int playerType) throws FalseIDException, FalsePlayerTypeException {
+		if(playerID < 0)
+			throw new FalseIDException();
+		if(playerType < 0)
+			throw new FalsePlayerTypeException();
 		this.playerID = playerID;
 		this.playerType = playerType;
 	}
@@ -36,5 +44,7 @@ abstract class PlayerDelegate implements Player {
 	public void setPlayerHasWon() {
 		won = true;
 	}
+	
+	
 	
 }

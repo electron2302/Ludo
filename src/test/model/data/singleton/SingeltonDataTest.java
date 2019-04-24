@@ -1,4 +1,4 @@
-package model.data.test;
+package test.model.data.singleton;
 
 import static org.junit.Assert.*;
 
