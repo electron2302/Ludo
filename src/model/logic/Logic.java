@@ -1,5 +1,10 @@
 package model.logic;
 
+import model.data.exceptions.FalseIDException;
+import model.data.exceptions.FalsePlayerTypeException;
+import model.data.exceptions.FalsePositionException;
+import model.data.exceptions.FalseTockenIDException;
+import model.data.exceptions.NegativeBoardLengthException;
 import model.logic.exceptions.FalseDiceValueException;
 import model.logic.exceptions.IllegalMoveException;
 import model.logic.exceptions.PlayerAlereadyWonException;
@@ -17,8 +22,10 @@ public interface Logic {
 	 * @param boardLength the wanted board length.
 	 * @param playerCount the wanted count of players.
 	 * @param tockenCount the wanted count of tokens per player.
+	 * @throws IllegalArgumentException if boardLength <= 0 || tokenCount <= 0
+	 * 			|| playerCount <= 0 || types.length != playerCount
 	 */
-	void initialize(int boardLength, int tokenCount, int playerCount, int... types);
+	void initialize(int boardLength, int tokenCount, int playerCount, int... types) throws FalsePlayerTypeException, FalseIDException, FalseTockenIDException, NegativeBoardLengthException;
 
 	/**
 	 * Throws a dice.
@@ -35,8 +42,11 @@ public interface Logic {
 	 * @throws TriedToMooveToFarException if the position of the token + the diceValue exceeds the board length + the token count.
 	 * @throws FalseDiceValueException  it the dice value is smaller than 0 or bigger than 6.
 	 * @throws IllegalMoveException if you tried to throw your own token.
+	 * @throws FalsePositionException 
+	 * @throws FalseTockenIDException 
+	 * @throws FalseIDException 
 	 */
-	boolean move(int tokenID, int diceValue) throws PlayerAlereadyWonException, FalseDiceValueException, IllegalMoveException;
+	boolean move(int tokenID, int diceValue) throws PlayerAlereadyWonException, FalseDiceValueException, IllegalMoveException, TriedToMooveToFarException, FalseIDException, FalseTockenIDException, FalsePositionException;
 	
 	
 }

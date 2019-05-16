@@ -28,18 +28,24 @@ public class SingeltonData implements RWData {
 	 */
 	private final static SingeltonData singeltonData = new SingeltonData();
 
-	private final List<Player> players = new ArrayList<>();
-	private final Map<TockenID, Tocken> tockens = new HashMap<>();
+	private final List<Player> players;
+	private final Map<TockenID, Tocken> tockens;
 
-	private int playerTurn = -1;
+	private int playerTurn;
 
-	private int boardLength = -1;
-	private int spacesBetweenPlayerBases = -1;
+	private int boardLength;
+	private int spacesBetweenPlayerBases;
 	
 	/**
 	 * For the singleton Pattern.
 	 */
-	private SingeltonData() {}
+	private SingeltonData() {
+		players = new ArrayList<>();
+		tockens = new HashMap<>();
+		playerTurn = -1;
+		boardLength = -1;
+		spacesBetweenPlayerBases = -1;
+	}
 	
 	/**
 	 * For the singleton Pattern.
@@ -208,14 +214,34 @@ public class SingeltonData implements RWData {
 	 * @param position new position.
 	 * @throws FalseIDException if the playerID is < 0.
 	 * @throws FalseTockenIDException if the TokenID is < 0.
-	 * @throws FalsePositionException if the position is < 0.
+	 * @throws FalsePositionException if the position is < -1.
 	 */
 	@Override
 	public void setPositionOfTocken(int playerID, int tockenID, int position) throws FalsePositionException, FalseIDException, FalseTockenIDException {
 		tockens.get(new TockenID(playerID, tockenID)).setPosition(position);
 	}
+	
+	/**
+	 * Sets all variable to it´s initial state.
+	 * Method is only used for tests.
+	 */
+	@SuppressWarnings("unlikely-arg-type")
+	@Override
+	public void reset() {
+		int size = players.size();
+		for(int index = 0; index < size; index++)
+			players.remove(0);
+		size = tockens.size();
+		for(int index = 0; index < size; index++)    // the Argument is the index because it is the primitive type
+			tockens.remove(0);
+		playerTurn = -1;
+		boardLength = -1;
+		spacesBetweenPlayerBases = -1;
+		
+	}
 
 	private void setSpacesBetweenPlayerBases(int spacesBetweenPlayerBases) {
 		this.spacesBetweenPlayerBases = spacesBetweenPlayerBases;
 	}
+
 }

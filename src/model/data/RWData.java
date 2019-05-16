@@ -71,5 +71,13 @@ public interface RWData extends ROData {
 	 * @throws FalsePlayerTypeException it the type is < 1.
 	 */
 	int addPlayer(int type) throws FalsePlayerTypeException;
+	
+	
+	
+	/**
+	 * Sets all variable to it´s initial state.
+	 * Method is only used for tests.
+	 */
+	void reset();
 
 }

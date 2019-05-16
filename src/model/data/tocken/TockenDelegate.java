@@ -15,7 +15,7 @@ abstract public class TockenDelegate implements Tocken{
     }
 
     public void setPosition(int position) throws FalsePositionException {
-    	if(position < 0)
+    	if(position < -1)
     		throw new FalsePositionException();
         this.position = position;
     }
