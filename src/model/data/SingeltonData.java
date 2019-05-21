@@ -244,4 +244,6 @@ public class SingeltonData implements RWData {
 		this.spacesBetweenPlayerBases = spacesBetweenPlayerBases;
 	}
 
+
+
 }

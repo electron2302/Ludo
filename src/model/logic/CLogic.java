@@ -1,5 +1,7 @@
 package model.logic;
 
+import java.util.stream.Stream;
+
 import model.data.RWData;
 import model.data.exceptions.FalseIDException;
 import model.data.exceptions.FalsePlayerTypeException;
@@ -34,22 +36,18 @@ public class CLogic implements Logic {
 	 * 			|| one type < 0
 	 */
 	@Override
-	public void initialize(int boardLength, int tokenCount, int playerCount, int... types) {
+	public void initialize(int boardLength, int tockenCount, int playerCount, int... types) {
 		if(!isInitialised()) {
-			checkArguments(boardLength, tokenCount, playerCount, types);
-			try {
-				rwData.setPlayerTurn(0);
-				for(int counter = 0; counter < playerCount; counter++) {
-					rwData.addPlayer(types[counter]);
-					for(int tokenCounter = 0; tokenCounter < tokenCount; tokenCounter++) {
-						rwData.addTocken(counter, tokenCounter);
-					}
-				}
-				rwData.setBoardLength(boardLength);
-			} catch (FalseIDException | FalseTockenIDException | FalsePlayerTypeException | NegativeBoardLengthException e) {
-				e.printStackTrace();
-				throw new RuntimeException();
-			}
+			checkArguments(boardLength, tockenCount, playerCount, types);
+			Stream.iterate(0, counter -> counter+1)
+				.limit(playerCount)
+				.peek(counter -> rwData.addPlayer(types[counter]))
+				.forEach(counter -> Stream.iterate(0, tockenCounter -> tockenCounter +1)
+					.limit(tockenCount)
+					.forEach(tockenCounter -> rwData.addTocken(counter, tockenCounter))
+				);
+			rwData.setBoardLength(boardLength);
+			rwData.setPlayerTurn(0);
 		}
 	}
 
@@ -65,9 +63,10 @@ public class CLogic implements Logic {
 	private void checkArguments(int boardLength, int tokenCount, int playerCount, int... types) {
 		if(playerCount <= 0 || tokenCount <= 0 || boardLength <= 0 ||playerCount != types.length || boardLength%playerCount != 0)
 			throw new IllegalArgumentException();
-		for(int index = 0; index < types.length; index++)
-			if(types[index] <= 0 || types[index] > 3)
-				throw new IllegalArgumentException();
+		if(Stream.iterate(0,  index -> index+1)
+				.takeWhile(index -> index < types.length)
+				.anyMatch(index -> types[index] <= 0 || types[index] > 3))
+			throw new IllegalArgumentException();
 	}
 	
 	/**
@@ -97,23 +96,22 @@ public class CLogic implements Logic {
 			throw new FalseDiceValueException();
 		final int playerTurn = rwData.getPlayerTurnID();
 		boolean moved = true;
-
-			if(checks(tokenID, diceValue, playerTurn)) {
-				if(rwData.getPositionOfTocken(playerTurn, tokenID) == -1) {
-					throwTocken((0 + rwData.getSpacesBetweenPlayerBases()*playerTurn)%rwData.getBoardLength());
-					rwData.setPositionOfTocken(playerTurn, tokenID, 0);
-				}else {
-					final int relativeTargetPosition = rwData.getPositionOfTocken(playerTurn, tokenID) + diceValue;
-					throwTocken((relativeTargetPosition + rwData.getSpacesBetweenPlayerBases()*playerTurn)%rwData.getBoardLength());
-					rwData.setPositionOfTocken(playerTurn, tokenID, relativeTargetPosition);
-				}
-				if(diceValue != 6)
-					rwData.setPlayerTurn(playerTurn + 1);
-				if(updataPlayerHasWonStatus(playerTurn))
-					rwData.setPlayerHasWon(playerTurn);
+		if(checks(tokenID, diceValue, playerTurn)) {
+			if(rwData.getPositionOfTocken(playerTurn, tokenID) == -1) {
+				throwTocken((0 + rwData.getSpacesBetweenPlayerBases()*playerTurn)%rwData.getBoardLength());
+				rwData.setPositionOfTocken(playerTurn, tokenID, 0);
 			}else {
-				moved = false;
+				final int relativeTargetPosition = rwData.getPositionOfTocken(playerTurn, tokenID) + diceValue;
+				throwTocken((relativeTargetPosition + rwData.getSpacesBetweenPlayerBases()*playerTurn)%rwData.getBoardLength());
+				rwData.setPositionOfTocken(playerTurn, tokenID, relativeTargetPosition);
 			}
+			if(diceValue != 6)
+				rwData.setPlayerTurn(playerTurn + 1);
+			if(updataPlayerHasWonStatus(playerTurn))
+				rwData.setPlayerHasWon(playerTurn);
+		}else {
+			moved = false;
+		}
 		return moved;
 	}
 
@@ -130,27 +128,28 @@ public class CLogic implements Logic {
 	 */
 	private boolean checks(int tokenID, int diceValue, int playerTurn) throws FalseIDException,
 			FalseTockenIDException, TriedToMooveToFarException, PlayerAlereadyWonException {
-		boolean isAlowed = true;
+		// boolean isAlowed = true;
 		//check move distance
 		if(rwData.getPositionOfTocken(playerTurn, tokenID) + diceValue >= rwData.getBoardLength() + rwData.getTockenCountPP())
 			throw new TriedToMooveToFarException();
 		//check if player has already won, throws uncatched  Exception.  
 		if(rwData.hasPlayerWon(playerTurn))
 			throw new PlayerAlereadyWonException();
-		//check if you try to hit your own token.
-		for(int tokenIDOfPlayer = 0; tokenIDOfPlayer < rwData.getTockenCountPP(); tokenIDOfPlayer++) {
-			final int positionOfNotMovedToken = rwData.getPositionOfTocken(playerTurn, tokenIDOfPlayer);
-			final int positionOfToken = rwData.getPositionOfTocken(playerTurn, tokenID);
-			if(positionOfNotMovedToken == positionOfToken + diceValue && tokenIDOfPlayer != tokenID && positionOfToken != -1)
-				isAlowed = false;
-			if(positionOfNotMovedToken == 0 && positionOfToken != 0)
-				isAlowed = false;
-			if(diceValue == 6 && positionOfToken > 0 && positionOfNotMovedToken == -1)
-				isAlowed = false;
-		}
-		if(rwData.getPositionOfTocken(playerTurn, tokenID) == -1 && diceValue != 6)
-			isAlowed = false;
-		return isAlowed;
+		
+		return Stream.iterate(0, variableTockenID -> variableTockenID + 1)
+					.limit(rwData.getTockenCountPP())
+					.noneMatch(variableTockenID -> 
+						(rwData.getPositionOfTocken(playerTurn, tokenID) == -1 && diceValue != 6 ||
+							rwData.getPositionOfTocken(playerTurn, variableTockenID) == 
+									rwData.getPositionOfTocken(playerTurn, tokenID) + diceValue && 
+								variableTockenID != tokenID && 
+								rwData.getPositionOfTocken(playerTurn, tokenID) != -1) ||
+							(rwData.getPositionOfTocken(playerTurn, variableTockenID) == 0 && 
+								rwData.getPositionOfTocken(playerTurn, tokenID) != 0) ||
+							(diceValue == 6 && 
+								rwData.getPositionOfTocken(playerTurn, tokenID) > 0 && 
+								rwData.getPositionOfTocken(playerTurn, variableTockenID) == -1)
+					);
 	}
 
 	/**
@@ -162,11 +161,9 @@ public class CLogic implements Logic {
 	 * @throws FalseTockenIDException
 	 */
 	private boolean updataPlayerHasWonStatus(int playerTurn) throws FalseIDException, FalseTockenIDException {
-		boolean hasPlayerWon = true;
-		for(int tockenID = 0; tockenID < rwData.getTockenCountPP(); tockenID++)
-			if(rwData.getPositionOfTocken(playerTurn, tockenID) <rwData.getBoardLength())
-				hasPlayerWon = false;
-		return hasPlayerWon;
+		return Stream.iterate(0, tockenID -> tockenID +1)
+				.limit(rwData.getTockenCountPP())
+				.noneMatch(tockenID -> rwData.getPositionOfTocken(playerTurn, tockenID) <rwData.getBoardLength());
 	}
 
 	/**
@@ -178,10 +175,15 @@ public class CLogic implements Logic {
 	 * @throws FalseTockenIDException
 	 */
 	private void throwTocken(int targetPosition) throws FalsePositionException, FalseIDException, FalseTockenIDException {
-		for(int playerIndex = 0; playerIndex < rwData.getPlayerCount(); playerIndex++)
-			for(int tockenIndex = 0; tockenIndex < rwData.getTockenCountPP(); tockenIndex++)
-				if(rwData.getPositionOfTocken(playerIndex, tockenIndex) < rwData.getBoardLength() && (rwData.getPositionOfTocken(playerIndex, tockenIndex) + rwData.getSpacesBetweenPlayerBases()*playerIndex)%rwData.getBoardLength() == targetPosition)
-					rwData.setPositionOfTocken(playerIndex, tockenIndex, -1);
+		Stream.iterate(0, playerIndex -> playerIndex+1)
+			.limit(rwData.getPlayerCount())
+			.forEach(playerIndex -> Stream.iterate(0, tockenIndex -> tockenIndex+1)
+									.limit(rwData.getTockenCountPP())
+									.filter(tockenIndex -> rwData.getPositionOfTocken(playerIndex, tockenIndex) < rwData.getBoardLength() && 
+											(rwData.getPositionOfTocken(playerIndex, tockenIndex) + 
+												rwData.getSpacesBetweenPlayerBases()*playerIndex)%rwData.getBoardLength() == targetPosition)
+									.forEach(tockenIndex -> rwData.setPositionOfTocken(playerIndex, tockenIndex, -1) )
+			);
 	}
 	
 }

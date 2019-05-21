@@ -6,7 +6,7 @@ package model.data.exceptions;
  *
  */
 @SuppressWarnings("serial")
-public class FalseIDException extends Exception {
+public class FalseIDException extends RuntimeException {
 
 
 }
