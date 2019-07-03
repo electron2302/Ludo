@@ -1,5 +1,6 @@
-package model.logic;
+ package model.logic;
 
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import model.data.RWData;
@@ -8,6 +9,7 @@ import model.data.exceptions.FalsePlayerTypeException;
 import model.data.exceptions.FalsePositionException;
 import model.data.exceptions.FalseTockenIDException;
 import model.data.exceptions.NegativeBoardLengthException;
+import model.logic.exceptions.ConsumerExceptionTunnel;
 import model.logic.exceptions.FalseDiceValueException;
 import model.logic.exceptions.IllegalMoveException;
 import model.logic.exceptions.PlayerAlereadyWonException;
@@ -39,7 +41,7 @@ public class CLogic implements Logic {
 	public void initialize(int boardLength, int tockenCount, int playerCount, int... types) {
 		if(!isInitialised()) {
 			checkArguments(boardLength, tockenCount, playerCount, types);
-			Stream.iterate(0, counter -> counter+1)
+			IntStream.iterate(0, counter -> counter+1)
 				.limit(playerCount)
 				.peek(counter -> rwData.addPlayer(types[counter]))
 				.forEach(counter -> Stream.iterate(0, tockenCounter -> tockenCounter +1)
@@ -63,7 +65,7 @@ public class CLogic implements Logic {
 	private void checkArguments(int boardLength, int tokenCount, int playerCount, int... types) {
 		if(playerCount <= 0 || tokenCount <= 0 || boardLength <= 0 ||playerCount != types.length || boardLength%playerCount != 0)
 			throw new IllegalArgumentException();
-		if(Stream.iterate(0,  index -> index+1)
+		if(IntStream.iterate(0,  index -> index+1)
 				.takeWhile(index -> index < types.length)
 				.anyMatch(index -> types[index] <= 0 || types[index] > 3))
 			throw new IllegalArgumentException();
@@ -129,14 +131,14 @@ public class CLogic implements Logic {
 	private boolean checks(int tokenID, int diceValue, int playerTurn) throws FalseIDException,
 			FalseTockenIDException, TriedToMooveToFarException, PlayerAlereadyWonException {
 		// boolean isAlowed = true;
-		//check move distance
+		// check move distance
 		if(rwData.getPositionOfTocken(playerTurn, tokenID) + diceValue >= rwData.getBoardLength() + rwData.getTockenCountPP())
 			throw new TriedToMooveToFarException();
-		//check if player has already won, throws uncatched  Exception.  
+		// check if player has already won, throws uncatched  Exception.  
 		if(rwData.hasPlayerWon(playerTurn))
 			throw new PlayerAlereadyWonException();
 		
-		return Stream.iterate(0, variableTockenID -> variableTockenID + 1)
+		return IntStream.iterate(0, variableTockenID -> variableTockenID + 1)
 					.limit(rwData.getTockenCountPP())
 					.noneMatch(variableTockenID -> 
 						(rwData.getPositionOfTocken(playerTurn, tokenID) == -1 && diceValue != 6 ||
@@ -151,6 +153,8 @@ public class CLogic implements Logic {
 								rwData.getPositionOfTocken(playerTurn, variableTockenID) == -1)
 					);
 	}
+	
+	
 
 	/**
 	 * Checks if the player has won.
@@ -185,5 +189,6 @@ public class CLogic implements Logic {
 									.forEach(tockenIndex -> rwData.setPositionOfTocken(playerIndex, tockenIndex, -1) )
 			);
 	}
+	
 	
 }

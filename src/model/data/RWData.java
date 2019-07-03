@@ -79,5 +79,6 @@ public interface RWData extends ROData {
 	 * Method is only used for tests.
 	 */
 	void reset();
+	
 
 }

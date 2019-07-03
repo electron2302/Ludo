@@ -78,6 +78,4 @@ public interface ROData {
 	 * @return total count of players.
 	 */
 	int getPlayerCount();
-
-
 }

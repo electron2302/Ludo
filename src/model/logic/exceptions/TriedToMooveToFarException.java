@@ -6,6 +6,6 @@ package model.logic.exceptions;
  *
  */
 @SuppressWarnings("serial")
-public class TriedToMooveToFarException extends Exception {
+public class TriedToMooveToFarException extends RuntimeException {
 
 }

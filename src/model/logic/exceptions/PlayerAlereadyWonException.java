@@ -6,6 +6,6 @@ package model.logic.exceptions;
  *
  */
 @SuppressWarnings("serial")
-public class PlayerAlereadyWonException extends Exception {
+public class PlayerAlereadyWonException extends RuntimeException {
 
 }
