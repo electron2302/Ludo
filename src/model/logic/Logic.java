@@ -1,5 +1,7 @@
 package model.logic;
 
+import java.util.List;
+
 import model.data.exceptions.FalseIDException;
 import model.data.exceptions.FalsePlayerTypeException;
 import model.data.exceptions.FalsePositionException;
@@ -25,7 +27,7 @@ public interface Logic {
 	 * @throws IllegalArgumentException if boardLength <= 0 || tokenCount <= 0
 	 * 			|| playerCount <= 0 || types.length != playerCount
 	 */
-	void initialize(int boardLength, int tokenCount, int playerCount, int... types) throws FalsePlayerTypeException, FalseIDException, FalseTockenIDException, NegativeBoardLengthException;
+	void initialize(int boardLength, int tokenCount, int playerCount, List<Integer> types) throws FalsePlayerTypeException, FalseIDException, FalseTockenIDException, NegativeBoardLengthException;
 
 	/**
 	 * Throws a dice.

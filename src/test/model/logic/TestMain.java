@@ -1,6 +1,7 @@
 package test.model.logic;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import model.data.RWData;
 import model.data.exceptions.FalseIDException;
@@ -21,7 +22,7 @@ public class TestMain {
 		final Logic logic = new CLogic();
 		final RWData data = RWData.getInstanceOfRWData();
 		
-		logic.initialize(40, 4, 4, 1, 2, 3, 1);
+		logic.initialize(40, 4, 4, Arrays.asList(1, 2, 3, 1));
 		
 		//test initialize
 		System.out.println(data.getBoardLength() + " explected: " + 40);

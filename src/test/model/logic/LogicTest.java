@@ -37,7 +37,7 @@ public class LogicTest {
 	public void initializeTest() throws FalseIDException, FalseTockenIDException, FalsePlayerTypeException, NegativeBoardLengthException {
 		//arrange
 		final Logic sut = getSut();
-		sut.initialize(40, 4, 4, 1, 2, 3, 1);
+		sut.initialize(40, 4, 4, Arrays.asList(1, 2, 3, 1));
 		final int wantBoardLength = 40;
 		final int wantPlayerCount = 4;
 		final List<Integer> wantPlayerTypes = Arrays.asList(1, 2, 3, 1);
@@ -79,8 +79,8 @@ public class LogicTest {
 	public void initializeTwiceTest() throws FalseIDException, FalseTockenIDException, FalsePlayerTypeException, NegativeBoardLengthException {
 		//arrange
 		final Logic sut = getSut();
-		sut.initialize(40, 4, 4, 1, 2, 3, 1);
-		sut.initialize(12345, 12345, 12345, 12345);
+		sut.initialize(40, 4, 4, Arrays.asList(1, 2, 3, 1));
+		sut.initialize(12345, 12345, 12345, Arrays.asList(12345));
 		final int wantBoardLength = 40;
 		final int wantPlayerCount = 4;
 		final List<Integer> wantPlayerTypes = Arrays.asList(1, 2, 3, 1);
@@ -124,7 +124,7 @@ public class LogicTest {
 		//arrange
 		final Logic sut = getSut();
 		//act
-		sut.initialize(40, 4, 4, 3, 3, 3, -1);
+		sut.initialize(40, 4, 4, Arrays.asList(3, 3, 3, -1));
 	}
 	
 	@Test(timeout = 1_000, expected = IllegalArgumentException.class)
@@ -132,7 +132,7 @@ public class LogicTest {
 		//arrange
 		final Logic sut = getSut();
 		//act
-		sut.initialize(40, 4, 4, 3, 3, 3, 6);
+		sut.initialize(40, 4, 4, Arrays.asList(3, 3, 3, 6));
 	}
 	
 	@Test(timeout = 1_000, expected = IllegalArgumentException.class)
@@ -140,7 +140,7 @@ public class LogicTest {
 		//arrange
 		final Logic sut = getSut();
 		//act
-		sut.initialize(40, 4, 4, 3, 3, 3);
+		sut.initialize(40, 4, 4, Arrays.asList(3, 3, 3));
 	}
 	
 	@Test(timeout = 1_000, expected = IllegalArgumentException.class)
@@ -148,7 +148,7 @@ public class LogicTest {
 		//arrange
 		final Logic sut = getSut();
 		//act
-		sut.initialize(40, 4, 4, 3, 3, 3, 3, 3);
+		sut.initialize(40, 4, 4, Arrays.asList(3, 3, 3, 3, 3));
 	}
 	
 	@Test(timeout = 1_000, expected = IllegalArgumentException.class)
@@ -156,7 +156,7 @@ public class LogicTest {
 		//arrange
 		final Logic sut = getSut();
 		//act
-		sut.initialize(0, 4, 4, 3, 3, 3, 3);
+		sut.initialize(0, 4, 4, Arrays.asList(3, 3, 3, 3));
 	}
 	
 	
@@ -165,7 +165,7 @@ public class LogicTest {
 		//arrange
 		final Logic sut = getSut();
 		//act
-		sut.initialize(3, 4, 4, 3, 3, 3, 3);
+		sut.initialize(3, 4, 4, Arrays.asList(3, 3, 3, 3));
 	}
 	
 	@Test(timeout = 1_000, expected = IllegalArgumentException.class)
@@ -173,7 +173,7 @@ public class LogicTest {
 		//arrange
 		final Logic sut = getSut();
 		//act
-		sut.initialize(4, 0, 4, 3, 3, 3, 3);
+		sut.initialize(4, 0, 4, Arrays.asList(3, 3, 3, 3));
 	}
 	
 	@Test(timeout = 1_000, expected = IllegalArgumentException.class)
@@ -181,14 +181,14 @@ public class LogicTest {
 		//arrange
 		final Logic sut = getSut();
 		//act
-		sut.initialize(4, 4, 0);
+		sut.initialize(4, 4, 0, new ArrayList<Integer>());
 	}
 	
 	@Test(timeout = 1_000)
 	public void moveOutOfBase() throws FalseIDException, FalseTockenIDException, PlayerAlereadyWonException, FalseDiceValueException, IllegalMoveException, FalsePlayerTypeException, NegativeBoardLengthException, TriedToMooveToFarException, FalsePositionException {
 		//arrange
 		final Logic sut = getSut();
-		sut.initialize(40, 4, 4, 1, 2, 3, 1);
+		sut.initialize(40, 4, 4, Arrays.asList(1, 2, 3, 1));
 		final List<Integer> wantPositionOfTocken = Arrays.asList( 5, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1);
 
 		sut.move(0, 6);
@@ -213,7 +213,7 @@ public class LogicTest {
 	public void moveOutOfBaseAndThrowTocken() throws FalseIDException, FalseTockenIDException, PlayerAlereadyWonException, FalseDiceValueException, IllegalMoveException, FalsePlayerTypeException, NegativeBoardLengthException, TriedToMooveToFarException, FalsePositionException {
 		//arrange
 		final Logic sut = getSut();
-		sut.initialize(40, 4, 4, 1, 2, 3, 1);
+		sut.initialize(40, 4, 4, Arrays.asList(1, 2, 3, 1));
 		final List<Integer> wantPositionOfTocken = Arrays.asList( -1, -1, -1, -1, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1);
 
 		//first Player
@@ -244,7 +244,7 @@ public class LogicTest {
 	public void moveAtFieldAndThrowTocken() throws FalseIDException, FalseTockenIDException, PlayerAlereadyWonException, FalseDiceValueException, IllegalMoveException, FalsePlayerTypeException, NegativeBoardLengthException, TriedToMooveToFarException, FalsePositionException {
 		//arrange
 		final Logic sut = getSut();
-		sut.initialize(40, 4, 4, 1, 2, 3, 1);
+		sut.initialize(40, 4, 4, Arrays.asList(1, 2, 3, 1));
 		final List<Integer> wantPositionOfTocken = Arrays.asList( 13, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1);
 
 		//first Player
@@ -283,7 +283,7 @@ public class LogicTest {
 	public void moveAtFieldWithWrapArroundAndThrowTocken() throws FalseIDException, FalseTockenIDException, PlayerAlereadyWonException, FalseDiceValueException, IllegalMoveException, FalsePlayerTypeException, NegativeBoardLengthException, TriedToMooveToFarException, FalsePositionException {
 		//arrange
 		final Logic sut = getSut();
-		sut.initialize(40, 4, 4, 1, 2, 3, 1);
+		sut.initialize(40, 4, 4, Arrays.asList(1, 2, 3, 1));
 		final List<Integer> wantPositionOfTocken = Arrays.asList( -1, -1, -1, -1, 32, 1, 2, 3, -1, -1, -1, -1, -1, -1, -1, -1);
 
 		//first Player
@@ -321,7 +321,7 @@ public class LogicTest {
 			throws FalseIDException, FalseTockenIDException, PlayerAlereadyWonException, FalseDiceValueException, IllegalMoveException, FalsePlayerTypeException, NegativeBoardLengthException, TriedToMooveToFarException, FalsePositionException {
 		//arrange
 		final Logic sut = getSut();
-		sut.initialize(40, 4, 4, 1, 2, 3, 1);
+		sut.initialize(40, 4, 4, Arrays.asList(1, 2, 3, 1));
 		final List<Integer> wantPositionOfTocken = Arrays.asList( 43, 42, 41, 40, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1);
 
 		//first Player
@@ -359,7 +359,7 @@ public class LogicTest {
 			for(int token = 0; token < 4; token++)
 				havePositionOfTocken.add(data.getPositionOfTocken(player, token));
 		//assert
-		//assertEquals(wantPlayerWonStatus, hasPlayerWon);
+		assertEquals(wantPlayerWonStatus, hasPlayerWon);
 		for(int index = 0; index < 16; index++) {
 			assertEquals(wantPositionOfTocken.get(index), havePositionOfTocken.get(index));
 		}
@@ -369,7 +369,7 @@ public class LogicTest {
 	public void moveAndTryToHitYourOwnTocken() throws FalseIDException, FalseTockenIDException, PlayerAlereadyWonException, FalseDiceValueException, IllegalMoveException, FalsePlayerTypeException, NegativeBoardLengthException, TriedToMooveToFarException, FalsePositionException {
 		//arrange
 		final Logic sut = getSut();
-		sut.initialize(40, 4, 4, 1, 2, 3, 1);
+		sut.initialize(40, 4, 4, Arrays.asList(1, 2, 3, 1));
 		sut.move(0, 6);
 		sut.move(0, 4);
 		data.setPlayerTurn(0);
@@ -400,7 +400,7 @@ public class LogicTest {
 	public void moveTryToMoveTockenWhileOneIsAtPosition0() throws FalseIDException, FalseTockenIDException, PlayerAlereadyWonException, FalseDiceValueException, IllegalMoveException, FalsePlayerTypeException, NegativeBoardLengthException, TriedToMooveToFarException, FalsePositionException {
 		//arrange
 		final Logic sut = getSut();
-		sut.initialize(40, 4, 4, 1, 2, 3, 1);
+		sut.initialize(40, 4, 4, Arrays.asList(1, 2, 3, 1));
 		sut.move(0, 6);
 		sut.move(0, 4);
 		data.setPlayerTurn(0);
@@ -428,7 +428,7 @@ public class LogicTest {
 	public void moveFalseTockenWithDiceValue6AndTockenInBase() throws FalsePlayerTypeException, FalseIDException, FalseTockenIDException, NegativeBoardLengthException, PlayerAlereadyWonException, FalseDiceValueException, IllegalMoveException, TriedToMooveToFarException, FalsePositionException {
 		//arrange
 		final Logic sut = getSut();
-		sut.initialize(40, 4, 4, 1, 2, 3, 1);
+		sut.initialize(40, 4, 4, Arrays.asList(1, 2, 3, 1));
 		sut.move(0, 6);
 		sut.move(0, 4);
 		data.setPlayerTurn(0);
@@ -453,7 +453,7 @@ public class LogicTest {
 	public void moveWithDiecValue0Bombs() throws FalsePlayerTypeException, FalseIDException, FalseTockenIDException, NegativeBoardLengthException, PlayerAlereadyWonException, FalseDiceValueException, IllegalMoveException, TriedToMooveToFarException, FalsePositionException {
 		//arrange
 		final Logic sut = getSut();
-		sut.initialize(40, 4, 4, 1, 2, 3, 1);
+		sut.initialize(40, 4, 4, Arrays.asList(1, 2, 3, 1));
 		//act
 		sut.move(0, 0);
 		
@@ -463,7 +463,7 @@ public class LogicTest {
 	public void moveWithDiecValue7Bombs() throws FalsePlayerTypeException, FalseIDException, FalseTockenIDException, NegativeBoardLengthException, PlayerAlereadyWonException, FalseDiceValueException, IllegalMoveException, TriedToMooveToFarException, FalsePositionException {
 		//arrange
 		final Logic sut = getSut();
-		sut.initialize(40, 4, 4, 1, 2, 3, 1);
+		sut.initialize(40, 4, 4, Arrays.asList(1, 2, 3, 1));
 		//act
 		sut.move(0, 7);
 		
@@ -473,7 +473,7 @@ public class LogicTest {
 	public void moveToFarBombs() throws FalsePlayerTypeException, FalseIDException, FalseTockenIDException, NegativeBoardLengthException, PlayerAlereadyWonException, FalseDiceValueException, IllegalMoveException, TriedToMooveToFarException, FalsePositionException {
 		//arrange
 		final Logic sut = getSut();
-		sut.initialize(40, 4, 4, 1, 2, 3, 1);
+		sut.initialize(40, 4, 4, Arrays.asList(1, 2, 3, 1));
 		sut.move(1, 6);
 		sut.move(1, 2);
 		data.setPlayerTurn(0);
@@ -494,7 +494,7 @@ public class LogicTest {
 	public void moveTryToMoveIfPlayerHaseAlereadyWonBombs() throws FalsePlayerTypeException, FalseIDException, FalseTockenIDException, NegativeBoardLengthException, PlayerAlereadyWonException, FalseDiceValueException, IllegalMoveException, TriedToMooveToFarException, FalsePositionException {
 		//arrange
 		final Logic sut = getSut();
-		sut.initialize(40, 4, 4, 1, 2, 3, 1);
+		sut.initialize(40, 4, 4, Arrays.asList(1, 2, 3, 1));
 		//first Player
 		data.setPlayerTurn(0);
 		sut.move(0, 6);
@@ -529,7 +529,7 @@ public class LogicTest {
 	public void moveOutOfBaseWithFalseValue() throws FalsePlayerTypeException, FalseIDException, FalseTockenIDException, NegativeBoardLengthException, PlayerAlereadyWonException, FalseDiceValueException, IllegalMoveException, TriedToMooveToFarException, FalsePositionException {
 		//arrange
 		final Logic sut = getSut();
-		sut.initialize(40, 4, 4, 1, 1, 1, 1);
+		sut.initialize(40, 4, 4, Arrays.asList(1, 1, 1, 1));
 		final boolean want = false;
 		//act
 		final boolean have = sut.move(0, 3);

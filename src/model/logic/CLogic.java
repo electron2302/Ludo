@@ -1,17 +1,14 @@
  package model.logic;
 
+import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import model.data.RWData;
 import model.data.exceptions.FalseIDException;
-import model.data.exceptions.FalsePlayerTypeException;
 import model.data.exceptions.FalsePositionException;
 import model.data.exceptions.FalseTockenIDException;
-import model.data.exceptions.NegativeBoardLengthException;
-import model.logic.exceptions.ConsumerExceptionTunnel;
 import model.logic.exceptions.FalseDiceValueException;
-import model.logic.exceptions.IllegalMoveException;
 import model.logic.exceptions.PlayerAlereadyWonException;
 import model.logic.exceptions.TriedToMooveToFarException;
 
@@ -38,12 +35,12 @@ public class CLogic implements Logic {
 	 * 			|| one type < 0
 	 */
 	@Override
-	public void initialize(int boardLength, int tockenCount, int playerCount, int... types) {
+	public void initialize(int boardLength, int tockenCount, int playerCount, List<Integer> types) {
 		if(!isInitialised()) {
 			checkArguments(boardLength, tockenCount, playerCount, types);
 			IntStream.iterate(0, counter -> counter+1)
 				.limit(playerCount)
-				.peek(counter -> rwData.addPlayer(types[counter]))
+				.peek(counter -> rwData.addPlayer(types.get(counter)))
 				.forEach(counter -> Stream.iterate(0, tockenCounter -> tockenCounter +1)
 					.limit(tockenCount)
 					.forEach(tockenCounter -> rwData.addTocken(counter, tockenCounter))
@@ -62,12 +59,12 @@ public class CLogic implements Logic {
 		return isInitialized;
 	}
 
-	private void checkArguments(int boardLength, int tokenCount, int playerCount, int... types) {
-		if(playerCount <= 0 || tokenCount <= 0 || boardLength <= 0 ||playerCount != types.length || boardLength%playerCount != 0)
+	private void checkArguments(int boardLength, int tokenCount, int playerCount, List<Integer> types) {
+		if(playerCount <= 0 || tokenCount <= 0 || boardLength <= 0 ||playerCount != types.size() || boardLength%playerCount != 0)
 			throw new IllegalArgumentException();
 		if(IntStream.iterate(0,  index -> index+1)
-				.takeWhile(index -> index < types.length)
-				.anyMatch(index -> types[index] <= 0 || types[index] > 3))
+				.takeWhile(index -> index < types.size())
+				.anyMatch(index -> types.get(index) <= 0 || types.get(index) > 3))
 			throw new IllegalArgumentException();
 	}
 	
