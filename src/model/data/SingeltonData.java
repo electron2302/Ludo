@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import model.data.exceptions.FalseIDException;
 import model.data.exceptions.FalsePlayerTypeException;
@@ -71,12 +72,7 @@ public class SingeltonData implements RWData {
 	 */
 	public int addPlayer(int type) throws FalsePlayerTypeException {
 		final int newID = getPlayers().size();	// the ID starts with 0.
-		try {
-			getPlayers().add(Player.make(newID, type));
-		} catch (FalseIDException e) {
-			e.printStackTrace();
-			throw new RuntimeException();
-		}
+		getPlayers().add(Player.make(newID, type));
 		return newID;
 	}
 	
@@ -204,6 +200,10 @@ public class SingeltonData implements RWData {
 	 */
 	@Override
 	public int getPositionOfTocken(int playerID, int tockenID) throws FalseIDException, FalseTockenIDException {
+		if(!tockens.containsKey(new TockenID(playerID, tockenID))) {
+			System.out.println(new TockenID(playerID, tockenID) + " ||  playerCount: " + getPlayerCount());
+			throw new FalseTockenIDException();
+		}
 		return tockens.get(new TockenID(playerID, tockenID)).getPosition();
 	}
 
@@ -218,7 +218,7 @@ public class SingeltonData implements RWData {
 	 */
 	@Override
 	public void setPositionOfTocken(int playerID, int tockenID, int position) throws FalsePositionException, FalseIDException, FalseTockenIDException {
-		tockens.get(new TockenID(playerID, tockenID)).setPosition(position);
+		Objects.requireNonNull(tockens.get(new TockenID(playerID, tockenID))).setPosition(position);
 	}
 	
 	/**

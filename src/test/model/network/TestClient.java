@@ -12,21 +12,22 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.IntStream;
 
 public class TestClient {
 
-    public static void main(String... args) throws IOException {
-        final List<Thread> workers = new ArrayList<>();
-        IntStream.iterate(0, n -> n + 1)
-                .limit(4)
-                .forEach((n) -> workers.add(
-                        new Thread(() -> new TestClient().work())
-                        )
-                );
-        workers.stream().forEach(worker -> worker.start());
-    }
+	private final int playerNumber;
+	
+	public TestClient(int playerNumber) {
+		this.playerNumber = playerNumber;
+	}
+    
+	private int getPlayerNumber() {
+		return playerNumber;
+	}
 
 
     private void work(){
@@ -43,19 +44,73 @@ public class TestClient {
             final BufferedReader buffReader = new BufferedReader(inStreamReader)
         ){
         	// start
+        		//init
             printWriter.println("POST initialize/40/4/4/1/1/1/1 HTTP/1.0");
             printWriter.flush();
             printWriter.println();
             printWriter.flush();
             
+            		//init response
             String read = buffReader.readLine();
-            while(!read.isEmpty()) {
-            	System.out.println(read);
-            	read = buffReader.readLine();
+            List<String> elementsOfRead = Arrays.asList(read.split("\\s"));
+            System.out.println("expected : 200; have : " + elementsOfRead.get(1));
+            System.out.println("expected : true; have : " + elementsOfRead.get(2));
+            while(!buffReader.readLine().isEmpty());
+            
+            	//move 5
+            		//test if playerTurn
+            int playerTurn = -2;
+            while(playerTurn != getPlayerNumber()) {
+	            printWriter.println("GET getPlayerTurnID HTTP/1.0");
+	            printWriter.flush();
+	            printWriter.println();
+	            printWriter.flush();
+	            
+	     					//test if playerTurn response
+	            read = buffReader.readLine();
+	            elementsOfRead = Arrays.asList(read.split("\\s"));
+	            System.out.println("expected : 200; have : " + elementsOfRead.get(1));
+	            System.out.println("expected : 0-3, own : "+ getPlayerNumber() +"; have : " + elementsOfRead.get(2));
+	            while(!buffReader.readLine().isEmpty());
+	            playerTurn = Integer.parseInt(elementsOfRead.get(2));
+	            Thread.sleep(100);
             }
             
+            	// move
+            printWriter.println("PUT move/0/6 HTTP/1.0");
+            printWriter.flush();
+            printWriter.println();
+            printWriter.flush();
+            
+     					//move Response
+            read = buffReader.readLine();
+            Objects.requireNonNull(read);
+            elementsOfRead = Arrays.asList(read.split("\\s"));
+            System.out.println("expected : 200; have : " + elementsOfRead.get(1));
+            System.out.println("expected : true; have : " + elementsOfRead.get(2));
+            while(!buffReader.readLine().isEmpty());
+            
+        		// move
+            printWriter.println("PUT move/0/5 HTTP/1.0");
+            printWriter.flush();
+            printWriter.println();
+            printWriter.flush();
+            
+     					//move Response
+            read = buffReader.readLine();
+            elementsOfRead = Arrays.asList(read.split("\\s"));
+            System.out.println("expected : 200; have : " + elementsOfRead.get(1));
+            System.out.println("expected : true; have : " + elementsOfRead.get(2));
+            while(!buffReader.readLine().isEmpty());
+            
+            
+            	//exit
+            printWriter.println("PUT exit HTTP/1.0");
+            printWriter.flush();
+            printWriter.println();
+            printWriter.flush();
             // end
-        } catch (IOException ex) {
+        } catch (IOException | InterruptedException ex) {
             throw new AssertionError(ex );
         }
     }
@@ -79,5 +134,17 @@ public class TestClient {
         }
         System.out.println(newPort);
         return newPort;
+    }
+    
+    
+    public static void main(String... args) throws IOException {
+        final List<Thread> workers = new ArrayList<>();
+        IntStream.iterate(0, n -> n + 1)
+                .limit(4)
+                .forEach((n) -> workers.add(
+                        new Thread(() -> new TestClient(n).work())
+                        )
+                );
+        workers.stream().forEach(worker -> worker.start());
     }
 }

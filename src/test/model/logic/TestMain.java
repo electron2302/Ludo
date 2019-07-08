@@ -19,7 +19,7 @@ import model.logic.exceptions.TriedToMooveToFarException;
 public class TestMain {
 
 	public static void main(String... args) throws FalseIDException, FalseTockenIDException, PlayerAlereadyWonException, FalseDiceValueException, IllegalMoveException, IOException, FalsePlayerTypeException, NegativeBoardLengthException, TriedToMooveToFarException, FalsePositionException {
-		final Logic logic = new CLogic();
+		final Logic logic = CLogic.getInstanceOfLogic();
 		final RWData data = RWData.getInstanceOfRWData();
 		
 		logic.initialize(40, 4, 4, Arrays.asList(1, 2, 3, 1));
@@ -27,7 +27,7 @@ public class TestMain {
 		//test initialize
 		System.out.println(data.getBoardLength() + " explected: " + 40);
 		System.out.println(data.getPlayerCount() + " explected: " + 4);
-		System.out.println(data.getPlayerTurnID() + " explected: " + -1);
+		System.out.println(data.getPlayerTurnID() + " explected: " + 0);
 		for(int index = 0; index < 4; index++)
 			System.out.println(data.getPlayerType(index) + " explected: " + ((index)%3+1));
 		for(int playerID = 0; playerID < 4; playerID++)

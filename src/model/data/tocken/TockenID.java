@@ -49,4 +49,8 @@ public class TockenID {
 	}
 
 
+	@Override
+	public String toString() {
+		return "playerID : " + payerID + " tockenID : " + tockenID;
+	}
 }

@@ -19,6 +19,8 @@ import model.logic.exceptions.TriedToMooveToFarException;
  */
 public interface Logic {
 
+	
+	
 	/**Initialize the data storage.
 	 * It sets the board length, the players and the tokens of each player. 
 	 * @param boardLength the wanted board length.

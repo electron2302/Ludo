@@ -37,7 +37,7 @@ public class LockServer {
 	
 	private final ROData roData = ROData.getInstanceOfROData();
 	private final RWData rwData = RWData.getInstanceOfRWData();
-	private final Logic logic = new CLogic();
+	private final Logic logic = CLogic.getInstanceOfLogic();
 	/**
 	 * for GET
 	 */
@@ -96,14 +96,14 @@ public class LockServer {
 		
 		initialize = new HashMap<>();
 		initialize.put("initialize", logic::initialize);
-		
+		 
 		reset = new HashMap<>();
 		reset.put("reset", rwData::reset);
 		
 	}
 	
-    private synchronized void start(int port) throws IOException {
-        final Thread lServer = new Thread(() -> new LockServer().lockedServer(port));
+    private void start(int port) throws IOException {
+        final Thread lServer = new Thread(() -> lockedServer(port));
         lServer.start();
     }
 
@@ -122,38 +122,42 @@ public class LockServer {
             ){
                 socket.setSoTimeout(0);
                 //start
-                final List<String> firstLine = Arrays.asList(buffReader.readLine().split("\\s"));
-                final List<String> body = buffReader.lines().takeWhile(line -> !line.isEmpty()).collect(Collectors.toList());
-                boolean errorOccured = false;
-                
-                if(firstLine.size() == 3) {
-                	try {
-	                	final Optional<String> outputOfCommand = doCommand(firstLine);
-		                if(!outputOfCommand.isEmpty()) {
-		                	printWriter.println("HTTP/1.0 200 " + outputOfCommand.get());
-		                	printWriter.flush();
-		                	printWriter.println("Here is the korrect input" + firstLine);
-		                	printWriter.println();
-		                	printWriter.flush();
-		                }else {
-		                	errorOccured = true;
+                List<String> firstLine = Arrays.asList(buffReader.readLine().split("\\s"));
+                List<String> body = buffReader.lines().takeWhile(line -> !line.isEmpty()).collect(Collectors.toList());
+                while(!firstLine.contains("exit")) {
+	                
+	                boolean errorOccured = false;
+	                
+	                if(firstLine.size() == 3) {
+	                	try {
+		                	final Optional<String> outputOfCommand = doCommand(firstLine);
+			                if(!outputOfCommand.isEmpty()) {
+			                	printWriter.println("HTTP/1.0 200 " + outputOfCommand.get());
+			                	printWriter.flush();
+			                	printWriter.println("Here is the korrect input" + firstLine);
+			                	printWriter.println();
+			                	printWriter.flush();
+			                }else {
+			                	errorOccured = true;
+			                }
+		                }catch(IllegalArgumentException ex) {
+	                		errorOccured = true;
 		                }
-	                }catch(IllegalArgumentException ex) {
-                		errorOccured = true;
+	                }else {
+	                	errorOccured = true;
 	                }
-                }else {
-                	errorOccured = true;
+	                
+	                if(errorOccured) {
+	                	printWriter.println("HTTP/1.0 400 SorryICantDoAnything");
+	                	printWriter.flush();
+	                	printWriter.println("There must be something wrong" + firstLine);
+	                	printWriter.println();
+	                	printWriter.flush();
+	                }
+	                firstLine = Arrays.asList(buffReader.readLine().split("\\s"));
+	                body = buffReader.lines().takeWhile(line -> !line.isEmpty()).collect(Collectors.toList());
+	                //end 
                 }
-                
-                if(errorOccured) {
-                	printWriter.println("HTTP/1.0 400 SorryICantDoAnything");
-                	printWriter.flush();
-                	printWriter.println("There must be something wrong" + firstLine);
-                	printWriter.println();
-                	printWriter.flush();
-                }
-                
-                //end
             }
         } catch (IOException ex) {
             throw new AssertionError(ex + " : " + port);
@@ -174,7 +178,7 @@ public class LockServer {
 		final List<String> command = Arrays.asList(firstLine.get(1).split("/"));
 		if(command.size() < 1)
 			throw new IllegalArgumentException();
-		System.out.println(command);
+		
 		switch(firstLine.get(0)) {
 		    case "GET":
 		    	if(pureGet.containsKey(command.get(0)) && command.size() == 1) {
@@ -233,11 +237,12 @@ public class LockServer {
 		    default:
 		    	throw new IllegalArgumentException();
 		}
+		System.out.println(command + " => " + output);
 		return output;
 	}
     
     public static void main(String... args) throws IOException {
-        try(final ServerSocket serverSocket = new ServerSocket(1234, 100_000)){
+        try(final ServerSocket serverSocket = new ServerSocket(1234)){
             ports.add(0);
             ports.add(19697);
             ports.add(25153);
@@ -257,13 +262,13 @@ public class LockServer {
     }
 
     private static int getNewConnection(final ServerSocket serverSocket, final Set<Integer> ports) throws IOException {
-        int port = 0;
+        Integer port = 0;
         try(final Socket socket = serverSocket.accept();
 
             final OutputStream outStream = socket.getOutputStream();
             final OutputStreamWriter streamWriter = new OutputStreamWriter(outStream);
             final PrintWriter printWriter = new PrintWriter(streamWriter)
-        ){
+        ){	
             while(ports.contains(port)) {
                 port = (int) (Math.random() * 50_000) + 1234;
             }
@@ -271,9 +276,7 @@ public class LockServer {
 
             ports.add(port);
 
-            System.out.print(port + System.lineSeparator());
-
-            printWriter.write(((Integer)port).toString() + System.lineSeparator());
+            printWriter.println(port.toString());
             printWriter.flush();
 
         }

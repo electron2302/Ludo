@@ -26,7 +26,7 @@ public class LogicTest {
 	
 	private Logic getSut() {
 		data.reset();
-		return new CLogic();
+		return CLogic.getInstanceOfLogic();
 	}
 	
 	private final RWData data = RWData.getInstanceOfRWData();

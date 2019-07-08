@@ -20,10 +20,20 @@ import model.logic.exceptions.TriedToMooveToFarException;
  */
 public class CLogic implements Logic {
 
+	private static final Logic logic = new CLogic();
+	
 	/**
 	 * Connection to the data storage with read an write permission.
 	 */
 	private final RWData rwData = RWData.getInstanceOfRWData();
+	
+	private CLogic() {
+		
+	}
+	
+	public static Logic getInstanceOfLogic() {
+		return logic;
+	}
 	
 	/**Initialize the data storage.
 	 * It sets the board length, the players and the tokens of each player. 
@@ -35,7 +45,7 @@ public class CLogic implements Logic {
 	 * 			|| one type < 0
 	 */
 	@Override
-	public void initialize(int boardLength, int tockenCount, int playerCount, List<Integer> types) {
+	public synchronized void initialize(int boardLength, int tockenCount, int playerCount, List<Integer> types) {
 		if(!isInitialised()) {
 			checkArguments(boardLength, tockenCount, playerCount, types);
 			IntStream.iterate(0, counter -> counter+1)
@@ -55,6 +65,8 @@ public class CLogic implements Logic {
 		if(rwData.getBoardLength() == -1)
 			isInitialized = false;
 		if(rwData.getPlayerCount() == 0)
+			isInitialized = false;
+		if(rwData.getPlayerTurnID() == -1)
 			isInitialized = false;
 		return isInitialized;
 	}
@@ -90,7 +102,7 @@ public class CLogic implements Logic {
 	 * @throws FalseIDException 
 	 */
 	@Override
-	public boolean move(int tokenID, int diceValue) throws PlayerAlereadyWonException, FalseDiceValueException, TriedToMooveToFarException, FalseIDException, FalseTockenIDException, FalsePositionException  {
+	public synchronized boolean move(int tokenID, int diceValue) throws PlayerAlereadyWonException, FalseDiceValueException, TriedToMooveToFarException, FalseIDException, FalseTockenIDException, FalsePositionException  {
 		if(diceValue < 1 || diceValue > 6)
 			throw new FalseDiceValueException();
 		final int playerTurn = rwData.getPlayerTurnID();
