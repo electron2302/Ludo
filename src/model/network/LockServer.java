@@ -34,7 +34,7 @@ import model.logic.Logic;
 
 /**
  * 
- * @author AH
+ * @author Andreas Hager, andreashager19@gmail.com
  *
  */
 public class LockServer {
@@ -226,25 +226,35 @@ public class LockServer {
 		    				.get()
 		    				.toString());
 		    	}
-		    	if(getTypeByID.containsKey(command.get(0)) && command.size() == 2) {
+		    	if(getTypeByID.containsKey(command.get(0)) && 
+		    			command.size() == 2 && 
+		    			command.get(1).chars().allMatch(Character::isDigit)) {
 		    		output = Optional.of(getTypeByID.get(command.get(0))
 		    				.apply(Integer.parseInt(command.get(1)))
 		    				.toString());
 		    	}
-		    	if(getPositionOfTocken.containsKey(command.get(0)) && command.size() == 3) {
+		    	if(getPositionOfTocken.containsKey(command.get(0)) && 
+		    			command.size() == 3 &&
+		    			command.get(1).chars().allMatch(Character::isDigit) && 
+		    			command.get(2).chars().allMatch(Character::isDigit)) {
 		    		output = Optional.of(getPositionOfTocken.get(command.get(0))
 		    				.apply(Integer.parseInt(command.get(1)), 
 		    						Integer.parseInt(command.get(2)))
 		    				.toString());
 		    	}
-		    	if(hasWon.containsKey(command.get(0)) && command.size() == 2) {
+		    	if(hasWon.containsKey(command.get(0)) && 
+		    			command.size() == 2 &&
+		    			command.get(1).chars().allMatch(Character::isDigit)) {
 		    		output = Optional.of(hasWon.get(command.get(0))
 		    				.apply(Integer.parseInt(command.get(1)))
 		    				.toString());
 		    	}	    	
 		    	break;
 		    case "PUT":
-		    	if(move.containsKey(command.get(0)) && command.size() == 3) {
+		    	if(move.containsKey(command.get(0)) && 
+		    			command.size() == 3 && 
+		    			command.get(1).chars().allMatch(Character::isDigit) &&
+		    			command.get(2).chars().allMatch(Character::isDigit)) {
 		    		output = Optional.of(move.get(command.get(0))
 		    				.apply(Integer.parseInt(command.get(1)), 
 		    					Integer.parseInt(command.get(2)))
@@ -253,10 +263,17 @@ public class LockServer {
 		    	break;
 		    case "POST":
 		    	final List<Integer> types = new ArrayList<>();
-		    	for(int index = 4; index < command.size(); index++) {
+		    	for(int index = 4; 
+		    			index < command.size() && 
+		    			command.get(index).chars().allMatch(Character::isDigit); 
+		    			index++) {
 		    		types.add(Integer.parseInt(command.get(index)));
 		    	}
-		    	if(initialize.containsKey(command.get(0)) && command.size() > 4) {
+		    	if(initialize.containsKey(command.get(0)) && 
+		    			command.size() > 4 &&
+		    			command.get(1).chars().allMatch(Character::isDigit) &&
+		    			command.get(2).chars().allMatch(Character::isDigit) && 
+		    			command.get(3).chars().allMatch(Character::isDigit)) {
 		    		initialize
 		    			.get(command.get(0))
 		    			.accept(Integer.parseInt(command.get(1)), 
@@ -277,7 +294,7 @@ public class LockServer {
 		    default:
 		    	throw new IllegalArgumentException();
 		}
-		System.out.println(command + " => " + output);
+		System.out.println(command + " => " + output.get());
 		return output;
 	}
     
@@ -318,9 +335,7 @@ public class LockServer {
             }
             
             final String inLine = buffReader.readLine();
-            if("exit".equals(inLine))
-            	continueInit = false;
-            else {
+            if(inLine.chars().allMatch(Character::isDigit)) {
             	final int gameNumber = Integer.parseInt(inLine);
             
 	            new LockServer(gameNumber).start(port);
@@ -329,7 +344,9 @@ public class LockServer {
 	
 	            printWriter.println(port.toString());
 	            printWriter.flush();
-            }
+            }else if("exit".equals(inLine))
+            	continueInit = false;
+            
         }
         return continueInit;
     }

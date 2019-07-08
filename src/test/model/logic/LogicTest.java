@@ -22,6 +22,11 @@ import model.logic.exceptions.IllegalMoveException;
 import model.logic.exceptions.PlayerAlereadyWonException;
 import model.logic.exceptions.TriedToMooveToFarException;
 
+/**
+ * 
+ * @author Andreas Hager, andreashager19@gmail.com
+ *
+ */
 public class LogicTest {
 	
 	private Logic getSut() {

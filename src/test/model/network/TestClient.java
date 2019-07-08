@@ -18,8 +18,8 @@ import java.util.Objects;
 import java.util.stream.IntStream;
 
 /**
- * 
- * @author AH
+ * A little fire test
+ * @author Andreas Hager, andreashager19@gmail.com
  *
  */
 public class TestClient {
@@ -51,7 +51,7 @@ public class TestClient {
 	 */
     private void work(int gameNumber){
         final int port = getPort(gameNumber);
-        System.out.println(Thread.currentThread().getName() + " : " + port);
+        //System.out.println(Thread.currentThread().getName() + " : " + port);
         try(final Socket socket = new Socket("localhost", port);
 
             final OutputStream streamWriter = socket.getOutputStream();
@@ -62,15 +62,15 @@ public class TestClient {
             final InputStreamReader inStreamReader = new InputStreamReader(streamReader);
             final BufferedReader buffReader = new BufferedReader(inStreamReader)
         ){
-        	// start
+        	// start 
         		//init
         	writeToServer(printWriter, "POST initialize/40/4/4/1/1/1/1 HTTP/1.0");
             
             		//init response
             String read = buffReader.readLine();
             List<String> elementsOfRead = Arrays.asList(read.split("\\s"));
-            System.out.println("expected : 200; have : " + elementsOfRead.get(1));
-            System.out.println("expected : true; have : " + elementsOfRead.get(2));
+            //System.out.println("expected : 200; have : " + elementsOfRead.get(1));
+            //System.out.println("expected : true; have : " + elementsOfRead.get(2));
             while(!buffReader.readLine().isEmpty()); 
             
             	//move 5
@@ -82,9 +82,11 @@ public class TestClient {
 	     					//test if playerTurn response
 	            read = buffReader.readLine();
 	            elementsOfRead = Arrays.asList(read.split("\\s"));
-	            System.out.println("expected : 200; have : " + elementsOfRead.get(1));
-	            System.out.println("expected : 0-3, own : "+ getPlayerNumber() +"; have : " + elementsOfRead.get(2));
+	            //System.out.println("expected : 200; have : " + elementsOfRead.get(1));
+	            //System.out.println("expected : 0-20, own : "+ getPlayerNumber() +"; have : " + elementsOfRead.get(2));
 	            while(!buffReader.readLine().isEmpty());
+	            if(!elementsOfRead.get(2).chars().allMatch(Character::isDigit))
+	            	throw new IllegalStateException();
 	            playerTurn = Integer.parseInt(elementsOfRead.get(2));
 	            Thread.sleep(100);
             }
@@ -95,8 +97,8 @@ public class TestClient {
      					//move Response
             read = buffReader.readLine();
             elementsOfRead = Arrays.asList(read.split("\\s"));
-            System.out.println("expected : 200; have : " + elementsOfRead.get(1));
-            System.out.println("expected : true; have : " + elementsOfRead.get(2));
+            //System.out.println("expected : 200; have : " + elementsOfRead.get(1));
+            //System.out.println("expected : true; have : " + elementsOfRead.get(2));
             while(!buffReader.readLine().isEmpty());
             
         		// move
@@ -105,8 +107,8 @@ public class TestClient {
      					//move Response
             read = buffReader.readLine();
             elementsOfRead = Arrays.asList(read.split("\\s"));
-            System.out.println("expected : 200; have : " + elementsOfRead.get(1));
-            System.out.println("expected : true; have : " + elementsOfRead.get(2));
+            //System.out.println("expected : 200; have : " + elementsOfRead.get(1));
+            //System.out.println("expected : true; have : " + elementsOfRead.get(2));
             while(!buffReader.readLine().isEmpty());
             
             
@@ -140,7 +142,7 @@ public class TestClient {
         try(final Socket socket = new Socket("localhost", 1234);
 
             final OutputStream streamWriter = socket.getOutputStream();
-            final BufferedOutputStream buffStreamWriter = new BufferedOutputStream(streamWriter);
+            final OutputStream buffStreamWriter = new BufferedOutputStream(streamWriter);
             final PrintStream printStream = new PrintStream(buffStreamWriter);
 
             final InputStream streamReader = socket.getInputStream();
@@ -150,11 +152,14 @@ public class TestClient {
         	printStream.println(gameNumber.toString());
         	printStream.flush();
         	
-            newPort = Integer.parseInt(buffReader.readLine().trim());
+        	final String readLine = buffReader.readLine().trim();
+        	if(!readLine.chars().allMatch(Character::isDigit))
+        		throw new IllegalStateException();
+            newPort = Integer.parseInt(readLine);
         } catch (IOException ex) {
             throw new AssertionError(ex);
         }
-        System.out.println(newPort);
+        //System.out.println(newPort);
         return newPort;
     }
     
@@ -167,7 +172,7 @@ public class TestClient {
     public static void main(String... args) throws IOException, InterruptedException {
         final List<Thread> workers = new ArrayList<>();
         IntStream.iterate(0, n -> n+1)
-        	.limit(1)
+        	.limit(20)
         	.forEach(n ->  IntStream.iterate(0, m -> m + 1)
 	                .limit(4)
 	                .forEach((m) -> workers.add(
