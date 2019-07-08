@@ -22,12 +22,12 @@ import model.data.tocken.TockenID;
  * @author Simon Arndt, technikon23@gmail.com
  * @version Initial version
  */
-public class SingeltonData implements RWData {
+public class Data implements RWData {
 	
 	/**
 	 * For the singleton Pattern.
 	 */
-	private final static SingeltonData singeltonData = new SingeltonData();
+	private final static Map<Integer, Data> data = new HashMap<>();
 
 	private final List<Player> players;
 	private final Map<TockenID, Tocken> tockens;
@@ -40,7 +40,7 @@ public class SingeltonData implements RWData {
 	/**
 	 * For the singleton Pattern.
 	 */
-	private SingeltonData() {
+	private Data() {
 		players = new ArrayList<>();
 		tockens = new HashMap<>();
 		playerTurn = -1;
@@ -52,8 +52,11 @@ public class SingeltonData implements RWData {
 	 * For the singleton Pattern.
 	 * @return the Instance of an singleton.
 	 */
-	public static SingeltonData getInstanceOfSingletonData() {
-		return singeltonData;
+	public static Data getInstanceOfSingletonData(int gameNumber) {
+		if(!data.containsKey(gameNumber))
+			data.put(gameNumber, new Data());
+		return data.get(gameNumber);
+		
 	}
 	
 	/**

@@ -26,10 +26,10 @@ public class LogicTest {
 	
 	private Logic getSut() {
 		data.reset();
-		return CLogic.getInstanceOfLogic();
+		return CLogic.getInstanceOfLogic(0);
 	}
 	
-	private final RWData data = RWData.getInstanceOfRWData();
+	private final RWData data = RWData.getInstanceOfRWData(0);
 	
 	
 	//set up, start up

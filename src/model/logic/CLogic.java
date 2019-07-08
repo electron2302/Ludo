@@ -1,6 +1,8 @@
  package model.logic;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -20,19 +22,21 @@ import model.logic.exceptions.TriedToMooveToFarException;
  */
 public class CLogic implements Logic {
 
-	private static final Logic logic = new CLogic();
+	private static final Map<Integer, Logic> logic = new HashMap<>();
 	
 	/**
 	 * Connection to the data storage with read an write permission.
 	 */
-	private final RWData rwData = RWData.getInstanceOfRWData();
+	private final RWData rwData;
 	
-	private CLogic() {
-		
+	private CLogic(int gameNumber) {
+		rwData = RWData.getInstanceOfRWData(gameNumber);
 	}
 	
-	public static Logic getInstanceOfLogic() {
-		return logic;
+	public static Logic getInstanceOfLogic(int gameNumber) {
+		if(!logic.containsKey(gameNumber))
+			logic.put(gameNumber, new CLogic(gameNumber));
+		return logic.get(gameNumber);
 	}
 	
 	/**Initialize the data storage.
@@ -117,7 +121,7 @@ public class CLogic implements Logic {
 				rwData.setPositionOfTocken(playerTurn, tokenID, relativeTargetPosition);
 			}
 			if(diceValue != 6)
-				rwData.setPlayerTurn(playerTurn + 1);
+				rwData.setPlayerTurn((playerTurn + 1) % rwData.getPlayerCount());
 			if(updataPlayerHasWonStatus(playerTurn))
 				rwData.setPlayerHasWon(playerTurn);
 		}else {

@@ -10,7 +10,7 @@ import model.data.exceptions.FalseTockenIDException;
 public class TestMain {
 	public static void main(String... args) throws FalseIDException, FalsePlayerTypeException, FalsePositionException, FalseTockenIDException {
 		
-		ROData test = ROData.getInstanceOfROData();
+		ROData test = ROData.getInstanceOfROData(0);
 		
 		
 		System.out.println(test.getPlayerTurnID() + ", expected = -1 " );
@@ -19,7 +19,7 @@ public class TestMain {
 		
 		//((RWData) test).addPlayer(1); // ist das ein Problem?!?
 		
-		RWData test2 = RWData.getInstanceOfRWData();
+		RWData test2 = RWData.getInstanceOfRWData(0);
 		System.out.println(test2.getPlayerCount() + ", expected = 0 ");
 		test2.addPlayer(1);
 		test2.addPlayer(3);

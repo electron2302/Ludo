@@ -19,8 +19,8 @@ import model.logic.exceptions.TriedToMooveToFarException;
 public class TestMain {
 
 	public static void main(String... args) throws FalseIDException, FalseTockenIDException, PlayerAlereadyWonException, FalseDiceValueException, IllegalMoveException, IOException, FalsePlayerTypeException, NegativeBoardLengthException, TriedToMooveToFarException, FalsePositionException {
-		final Logic logic = CLogic.getInstanceOfLogic();
-		final RWData data = RWData.getInstanceOfRWData();
+		final Logic logic = CLogic.getInstanceOfLogic(0);
+		final RWData data = RWData.getInstanceOfRWData(0);
 		
 		logic.initialize(40, 4, 4, Arrays.asList(1, 2, 3, 1));
 		

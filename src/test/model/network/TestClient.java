@@ -17,21 +17,40 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.IntStream;
 
+/**
+ * 
+ * @author AH
+ *
+ */
 public class TestClient {
 
+	/**
+	 * 
+	 */
 	private final int playerNumber;
 	
+	/**
+	 * 
+	 * @param playerNumber
+	 */
 	public TestClient(int playerNumber) {
 		this.playerNumber = playerNumber;
 	}
     
+	/**
+	 * 
+	 * @return
+	 */
 	private int getPlayerNumber() {
 		return playerNumber;
 	}
 
-
-    private void work(){
-        final int port = getPort();
+	/**
+	 * 
+	 * @param gameNumber
+	 */
+    private void work(int gameNumber){
+        final int port = getPort(gameNumber);
         System.out.println(Thread.currentThread().getName() + " : " + port);
         try(final Socket socket = new Socket("localhost", port);
 
@@ -45,26 +64,20 @@ public class TestClient {
         ){
         	// start
         		//init
-            printWriter.println("POST initialize/40/4/4/1/1/1/1 HTTP/1.0");
-            printWriter.flush();
-            printWriter.println();
-            printWriter.flush();
+        	writeToServer(printWriter, "POST initialize/40/4/4/1/1/1/1 HTTP/1.0");
             
             		//init response
             String read = buffReader.readLine();
             List<String> elementsOfRead = Arrays.asList(read.split("\\s"));
             System.out.println("expected : 200; have : " + elementsOfRead.get(1));
             System.out.println("expected : true; have : " + elementsOfRead.get(2));
-            while(!buffReader.readLine().isEmpty());
+            while(!buffReader.readLine().isEmpty()); 
             
             	//move 5
             		//test if playerTurn
             int playerTurn = -2;
             while(playerTurn != getPlayerNumber()) {
-	            printWriter.println("GET getPlayerTurnID HTTP/1.0");
-	            printWriter.flush();
-	            printWriter.println();
-	            printWriter.flush();
+            	writeToServer(printWriter, "GET getPlayerTurnID HTTP/1.0");
 	            
 	     					//test if playerTurn response
 	            read = buffReader.readLine();
@@ -77,24 +90,17 @@ public class TestClient {
             }
             
             	// move
-            printWriter.println("PUT move/0/6 HTTP/1.0");
-            printWriter.flush();
-            printWriter.println();
-            printWriter.flush();
+            writeToServer(printWriter, "PUT move/0/6 HTTP/1.0");
             
      					//move Response
             read = buffReader.readLine();
-            Objects.requireNonNull(read);
             elementsOfRead = Arrays.asList(read.split("\\s"));
             System.out.println("expected : 200; have : " + elementsOfRead.get(1));
             System.out.println("expected : true; have : " + elementsOfRead.get(2));
             while(!buffReader.readLine().isEmpty());
             
         		// move
-            printWriter.println("PUT move/0/5 HTTP/1.0");
-            printWriter.flush();
-            printWriter.println();
-            printWriter.flush();
+            writeToServer(printWriter, "PUT move/0/5 HTTP/1.0");
             
      					//move Response
             read = buffReader.readLine();
@@ -105,18 +111,31 @@ public class TestClient {
             
             
             	//exit
-            printWriter.println("PUT exit HTTP/1.0");
-            printWriter.flush();
-            printWriter.println();
-            printWriter.flush();
+            writeToServer(printWriter, "PUT exit HTTP/1.0");
             // end
         } catch (IOException | InterruptedException ex) {
             throw new AssertionError(ex );
         }
     }
+    
+    /**
+     * 
+     * @param printWriter
+     * @param message
+     */
+    private void writeToServer(PrintWriter printWriter, String message) {
+    	printWriter.println(message);
+        printWriter.flush();
+        printWriter.println();
+        printWriter.flush();
+    }
 
-
-    private int getPort() {
+    /**
+     * 
+     * @param gameNumber
+     * @return
+     */
+    private int getPort(Integer gameNumber) {
         final int newPort;
         try(final Socket socket = new Socket("localhost", 1234);
 
@@ -128,6 +147,9 @@ public class TestClient {
             final InputStreamReader inStreamReader = new InputStreamReader(streamReader);
             final BufferedReader buffReader = new BufferedReader(inStreamReader)
         ){
+        	printStream.println(gameNumber.toString());
+        	printStream.flush();
+        	
             newPort = Integer.parseInt(buffReader.readLine().trim());
         } catch (IOException ex) {
             throw new AssertionError(ex);
@@ -136,15 +158,36 @@ public class TestClient {
         return newPort;
     }
     
-    
-    public static void main(String... args) throws IOException {
+    /**
+     * 
+     * @param args
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    public static void main(String... args) throws IOException, InterruptedException {
         final List<Thread> workers = new ArrayList<>();
-        IntStream.iterate(0, n -> n + 1)
-                .limit(4)
-                .forEach((n) -> workers.add(
-                        new Thread(() -> new TestClient(n).work())
-                        )
-                );
+        IntStream.iterate(0, n -> n+1)
+        	.limit(1)
+        	.forEach(n ->  IntStream.iterate(0, m -> m + 1)
+	                .limit(4)
+	                .forEach((m) -> workers.add(
+	                        new Thread(() -> new TestClient(m).work(n))
+	                        )
+	                )
+        	);
+	        
         workers.stream().forEach(worker -> worker.start());
+        
+        Thread.sleep(1_000);
+        
+        try(final Socket socket = new Socket("localhost", 1234);
+        	
+            final OutputStream streamWriter = socket.getOutputStream();
+            final BufferedOutputStream buffStreamWriter = new BufferedOutputStream(streamWriter);
+            final PrintStream printStream = new PrintStream(buffStreamWriter);
+        ){
+        	printStream.println("exit");
+        	printStream.flush();
+        }
     }
 }

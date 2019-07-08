@@ -32,12 +32,30 @@ import model.data.RWData;
 import model.logic.CLogic;
 import model.logic.Logic;
 
+/**
+ * 
+ * @author AH
+ *
+ */
 public class LockServer {
+	/**
+	 * 
+	 */
 	private static final Set<Integer> ports = new HashSet<>();
 	
-	private final ROData roData = ROData.getInstanceOfROData();
-	private final RWData rwData = RWData.getInstanceOfRWData();
-	private final Logic logic = CLogic.getInstanceOfLogic();
+	/**
+	 * 
+	 */
+	private final ROData roData;
+	/**
+	 * 
+	 */
+	private final RWData rwData;
+	/**
+	 * 
+	 */
+	private final Logic logic;
+	
 	/**
 	 * for GET
 	 */
@@ -71,8 +89,15 @@ public class LockServer {
 	 */
 	final Map<String, Runnable> reset;
 	
-	
-	public LockServer() {
+	/**
+	 * 
+	 * @param gameNumber
+	 */
+	public LockServer(int gameNumber) {
+		roData = ROData.getInstanceOfROData(gameNumber);
+		rwData = RWData.getInstanceOfRWData(gameNumber);
+		logic = CLogic.getInstanceOfLogic(gameNumber);
+		
 		pureGet = new HashMap<>();
 		pureGet.put("getPlayerTurnID", roData::getPlayerTurnID);
 		pureGet.put("getBoardLength", roData::getBoardLength);
@@ -102,11 +127,20 @@ public class LockServer {
 		
 	}
 	
+	/**
+	 * 
+	 * @param port
+	 * @throws IOException
+	 */
     private void start(int port) throws IOException {
         final Thread lServer = new Thread(() -> lockedServer(port));
         lServer.start();
     }
 
+    /**
+     * 
+     * @param port
+     */
     private void lockedServer(int port) {
         try(final ServerSocket serverSocket = new ServerSocket(port, 1)){
             serverSocket.setSoTimeout(1_000);
@@ -168,6 +202,12 @@ public class LockServer {
         }
     }
 
+    /**
+     * 
+     * @param firstLine
+     * @return
+     * @throws IllegalArgumentException
+     */
 	private Optional<String> doCommand(final List<String> firstLine) throws IllegalArgumentException {
 		Objects.requireNonNull(firstLine);
 		if(firstLine.size() != 3)
@@ -241,45 +281,56 @@ public class LockServer {
 		return output;
 	}
     
+	/**
+	 * 
+	 * @param args
+	 * @throws IOException
+	 */
     public static void main(String... args) throws IOException {
         try(final ServerSocket serverSocket = new ServerSocket(1234)){
             ports.add(0);
-            ports.add(19697);
-            ports.add(25153);
-            ports.add(36541);
-            ports.add(49668);
-            ports.add(49669);
-            ports.add(50507);
-            ports.add(51033);
-            ports.add(51195);
-            final Object key = new Object();
-            while(true) {
-                synchronized(key){
-                    getNewConnection(serverSocket, ports);
-                }
-            }
+            while(getNewConnection(serverSocket, ports));
         }
     }
 
-    private static int getNewConnection(final ServerSocket serverSocket, final Set<Integer> ports) throws IOException {
+    /**
+     * 
+     * @param serverSocket
+     * @param ports
+     * @return
+     * @throws IOException
+     */
+    private static synchronized boolean getNewConnection(final ServerSocket serverSocket, final Set<Integer> ports) throws IOException {
         Integer port = 0;
+        boolean continueInit = true;
         try(final Socket socket = serverSocket.accept();
 
+        	final InputStream inStream = socket.getInputStream();
+        	final Reader reader = new InputStreamReader(inStream);
+        	final BufferedReader buffReader = new BufferedReader(reader);
+        		
             final OutputStream outStream = socket.getOutputStream();
-            final OutputStreamWriter streamWriter = new OutputStreamWriter(outStream);
+            final Writer streamWriter = new OutputStreamWriter(outStream);
             final PrintWriter printWriter = new PrintWriter(streamWriter)
         ){	
             while(ports.contains(port)) {
                 port = (int) (Math.random() * 50_000) + 1234;
             }
-            new LockServer().start(port);
-
-            ports.add(port);
-
-            printWriter.println(port.toString());
-            printWriter.flush();
-
+            
+            final String inLine = buffReader.readLine();
+            if("exit".equals(inLine))
+            	continueInit = false;
+            else {
+            	final int gameNumber = Integer.parseInt(inLine);
+            
+	            new LockServer(gameNumber).start(port);
+	
+	            ports.add(port);
+	
+	            printWriter.println(port.toString());
+	            printWriter.flush();
+            }
         }
-        return port;
+        return continueInit;
     }
 }

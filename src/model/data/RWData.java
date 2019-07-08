@@ -20,8 +20,8 @@ public interface RWData extends ROData {
 	 * Getter for an instance of an view at the data storage.
 	 * @return an instance of the view.
 	 */
-	static RWData getInstanceOfRWData() {
-		return SingeltonData.getInstanceOfSingletonData();
+	static RWData getInstanceOfRWData(int gameNumber) {
+		return Data.getInstanceOfSingletonData(gameNumber);
 	}
 	
 	/**

@@ -3,7 +3,7 @@ package test.model.data.singleton;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import model.data.SingeltonData;
+import model.data.Data;
 
 /**
  * 
@@ -11,13 +11,13 @@ import model.data.SingeltonData;
  * @version Initial version
  */
 public class SingeltonDataTest {
-	private final SingeltonData sut = SingeltonData.getInstanceOfSingletonData();
+	private final Data sut = Data.getInstanceOfSingletonData(0);
 
 	
 	@Test(timeout = 1_000)
 	public void getInstanceOfSingletonData() {
 		//arrange
-		final SingeltonData test = SingeltonData.getInstanceOfSingletonData();
+		final Data test = Data.getInstanceOfSingletonData(0);
 		final boolean want = true;
 		//act
 		final boolean have = sut == test;

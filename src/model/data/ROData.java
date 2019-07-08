@@ -17,8 +17,8 @@ public interface ROData {
 	 * Getter for a read only view at the data.
 	 * @return an instance of the RO methods of the data storage.
 	 */
-	static ROData getInstanceOfROData() {
-		return RWData.getInstanceOfRWData();
+	static ROData getInstanceOfROData(int gameNumber) {
+		return RWData.getInstanceOfRWData(gameNumber);
 	}
 	
 	/**
