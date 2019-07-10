@@ -13,7 +13,8 @@ public class TockenID {
 	private final int payerID;
 	private final int tockenID;
 	
-	public TockenID(int playerID, int tockenID) throws FalseIDException, FalseTockenIDException {
+	public TockenID(int playerID, int tockenID)
+			throws FalseIDException, FalseTockenIDException {
 		if(playerID < 0)
 			throw new FalseIDException();
 		if(tockenID < 0)
@@ -33,19 +34,19 @@ public class TockenID {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	public boolean equals(Object that) {
+		if (this == that)
 			return true;
-		if (obj == null)
+		if (that == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (getClass() != that.getClass())
 			return false;
-		TockenID other = (TockenID) obj;
+		TockenID other = (TockenID) that;
 		if (payerID != other.payerID)
 			return false;
 		if (tockenID != other.tockenID)
 			return false;
-		return true;
+		return true; 
 	}
 
 

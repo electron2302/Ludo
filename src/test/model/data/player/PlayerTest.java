@@ -52,7 +52,7 @@ public class PlayerTest {
 		final boolean want = true;
 		//act
 		final boolean have = sut.hasPlayerWon();
-		//assert
+		//assert 
 		assertEquals(want, have);
 	}
 	

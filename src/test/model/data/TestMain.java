@@ -8,7 +8,8 @@ import model.data.exceptions.FalsePositionException;
 import model.data.exceptions.FalseTockenIDException;
 
 public class TestMain {
-	public static void main(String... args) throws FalseIDException, FalsePlayerTypeException, FalsePositionException, FalseTockenIDException {
+	public static void main(String... args) throws FalseIDException, 
+			FalsePlayerTypeException, FalsePositionException, FalseTockenIDException {
 		
 		ROData test = ROData.getInstanceOfROData(0);
 		

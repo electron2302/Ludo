@@ -22,7 +22,7 @@ import java.util.stream.IntStream;
  * @author Andreas Hager, andreashager19@gmail.com
  *
  */
-public class TestClient {
+public class TestClient { 
 
 	/**
 	 * 
@@ -69,8 +69,8 @@ public class TestClient {
             		//init response
             String read = buffReader.readLine();
             List<String> elementsOfRead = Arrays.asList(read.split("\\s"));
-            //System.out.println("expected : 200; have : " + elementsOfRead.get(1));
-            //System.out.println("expected : true; have : " + elementsOfRead.get(2));
+            // System.out.println("expected : 200; have : " + elementsOfRead.get(1));
+            // System.out.println("expected : true; have : " + elementsOfRead.get(2));
             while(!buffReader.readLine().isEmpty()); 
             
             	//move 5
@@ -82,8 +82,8 @@ public class TestClient {
 	     					//test if playerTurn response
 	            read = buffReader.readLine();
 	            elementsOfRead = Arrays.asList(read.split("\\s"));
-	            //System.out.println("expected : 200; have : " + elementsOfRead.get(1));
-	            //System.out.println("expected : 0-20, own : "+ getPlayerNumber() +"; have : " + elementsOfRead.get(2));
+	            // System.out.println("expected : 200; have : " + elementsOfRead.get(1));
+	            // System.out.println("expected : 0-20, own : "+ getPlayerNumber() +"; have : " + elementsOfRead.get(2));
 	            while(!buffReader.readLine().isEmpty());
 	            if(!elementsOfRead.get(2).chars().allMatch(Character::isDigit))
 	            	throw new IllegalStateException();
@@ -97,8 +97,8 @@ public class TestClient {
      					//move Response
             read = buffReader.readLine();
             elementsOfRead = Arrays.asList(read.split("\\s"));
-            //System.out.println("expected : 200; have : " + elementsOfRead.get(1));
-            //System.out.println("expected : true; have : " + elementsOfRead.get(2));
+            // System.out.println("expected : 200; have : " + elementsOfRead.get(1));
+            // System.out.println("expected : true; have : " + elementsOfRead.get(2));
             while(!buffReader.readLine().isEmpty());
             
         		// move
@@ -107,8 +107,8 @@ public class TestClient {
      					//move Response
             read = buffReader.readLine();
             elementsOfRead = Arrays.asList(read.split("\\s"));
-            //System.out.println("expected : 200; have : " + elementsOfRead.get(1));
-            //System.out.println("expected : true; have : " + elementsOfRead.get(2));
+            // System.out.println("expected : 200; have : " + elementsOfRead.get(1));
+            // System.out.println("expected : true; have : " + elementsOfRead.get(2));
             while(!buffReader.readLine().isEmpty());
             
             
@@ -159,7 +159,7 @@ public class TestClient {
         } catch (IOException ex) {
             throw new AssertionError(ex);
         }
-        //System.out.println(newPort);
+        // System.out.println(newPort);
         return newPort;
     }
     
